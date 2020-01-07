@@ -57,33 +57,31 @@ class SACGraphAgent(TFAAgent):
 
     actor_cgnn = GNNWrapper(
       node_layers_def=[
-        {"units" : 128, "activation": "relu", "dropout_rate": 0.0},
-        {"units" : 128, "activation": "relu", "dropout_rate": 0.0},
-        {"units" : 32, "activation": "linear", "dropout_rate": 0.0},
+        {"units" : 128, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 128, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 32, "activation": "linear", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
       edge_layers_def=[
-        {"units" : 128, "activation": "relu", "dropout_rate": 0.0},
-        {"units" : 128, "activation": "relu", "dropout_rate": 0.0},
-        {"units" : 32, "activation": "linear", "dropout_rate": 0.0},
+        {"units" : 128, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 128, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 32, "activation": "linear", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
       h0_dim=3,
-      e0_dim=2,
-      training=True)
+      e0_dim=2)
 
     critic_cgnn = GNNWrapper(
       node_layers_def=[
-        {"units" : 128, "activation": "relu", "dropout_rate": 0.0},
-        {"units" : 128, "activation": "relu", "dropout_rate": 0.0},
-        {"units" : 32, "activation": "linear", "dropout_rate": 0.0},
+        {"units" : 128, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 128, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 32, "activation": "linear", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
       edge_layers_def=[
-        {"units" : 128, "activation": "relu", "dropout_rate": 0.0},
-        {"units" : 128, "activation": "relu", "dropout_rate": 0.0},
-        {"units" : 32, "activation": "linear", "dropout_rate": 0.0},
+        {"units" : 128, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 128, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 32, "activation": "linear", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
       h0_dim=3,
-      e0_dim=2,
-      training=True)
+      e0_dim=2)
 
     actor_net = CGNNNetwork(
       env.observation_spec(),

@@ -304,7 +304,7 @@
         "number_of_collections": 100000,
         "initial_collection_steps": 250,
         "collection_episodes_per_cycle": 1,
-        "evaluate_every_n_steps": 500,
+        "evaluate_every_n_steps": 250,
         "evaluation_steps": 25,
         "summary_path": "/Users/hart/2020/bark-ml/configurations/sac_highway/summaries/"
       },

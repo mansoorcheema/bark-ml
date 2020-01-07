@@ -10,7 +10,7 @@ from src.commons.spaces import BoundedContinuous, Discrete
 from src.observers.observer import StateObserver
 
 
-class SimpleObserver(StateObserver):
+class GraphObserver(StateObserver):
   def __init__(self,
                params=ParameterServer()):
     StateObserver.__init__(self, params)
@@ -24,7 +24,7 @@ class SimpleObserver(StateObserver):
   def observe(self, world, agents_to_observe):
     """see base class
     """
-    graph = -1.*np.ones(shape=(3, 6), dtype=np.float32)
+    graph = -1.*np.ones(shape=(3, 7), dtype=np.float32)
     # connections
     graph[0, 0] = 0
     graph[0, 1] = 1
@@ -38,24 +38,25 @@ class SimpleObserver(StateObserver):
     graph[1, 2] = np.cos(agent_state_1[2])*agent_state_1[3]
     graph[1, 3] = np.sin(agent_state_1[2])*agent_state_1[3]
     # right, left needs to match
-    graph[0, 3] = agent_state_0[0] - 5114
-    graph[1, 3] = agent_state_1[0] - 5110.1
+    graph[0, 4] = agent_state_0[0] - 5114
+    graph[1, 4] = agent_state_1[0] - 5110.1
+
     # edge values
-    graph[0, 3] = agent_state_1[0] - agent_state_0[0]
-    graph[0, 4] = agent_state_1[1] - agent_state_0[1]
-    graph[1, 4] = agent_state_0[0] - agent_state_1[0]
-    graph[1, 4] = agent_state_0[1] - agent_state_1[1]
+    graph[0, 5] = agent_state_1[0] - agent_state_0[0]
+    graph[0, 6] = agent_state_1[1] - agent_state_0[1]
+    graph[1, 5] = agent_state_0[0] - agent_state_1[0]
+    graph[1, 6] = agent_state_0[1] - agent_state_1[1]
 
     # TODO(@hart): plot graph in viewer
     return graph
 
   def reset(self, world, agents_to_observe):
-    super(SimpleObserver, self).reset(world, agents_to_observe)
+    super(GraphObserver, self).reset(world, agents_to_observe)
     return world
 
   @property
   def observation_space(self):
-    return spaces.Box(low=0., high=1., shape=(3, 6))
+    return spaces.Box(low=0., high=1., shape=(3, 7))
 
   @property
   def _len_state(self):
