@@ -45,6 +45,8 @@ class SimpleObserver(StateObserver):
     graph[0, 4] = agent_state_1[1] - agent_state_0[1]
     graph[1, 4] = agent_state_0[0] - agent_state_1[0]
     graph[1, 4] = agent_state_0[1] - agent_state_1[1]
+
+    # TODO(@hart): plot graph in viewer
     return graph
 
   def reset(self, world, agents_to_observe):

@@ -18,6 +18,7 @@ from src.wrappers.dynamic_model import DynamicModel
 from src.wrappers.tfa_wrapper import TFAWrapper
 from src.evaluators.goal_reached import GoalReached
 from src.agents.sac_agent import SACAgent
+from src.agents.sac_agent_graph import SACGraphAgent
 from src.runners.sac_runner import SACRunner
 from configurations.base_configuration import BaseConfiguration
 
