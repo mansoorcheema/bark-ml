@@ -37,7 +37,7 @@ class GraphObserver(StateObserver):
     graph[0, 3] = np.sin(agent_state_0[2])*agent_state_0[3]
     graph[1, 2] = np.cos(agent_state_1[2])*agent_state_1[3]
     graph[1, 3] = np.sin(agent_state_1[2])*agent_state_1[3]
-    # right, left needs to match
+    # distance to goal perserved in node values
     graph[0, 4] = agent_state_0[0] - 5114
     graph[1, 4] = agent_state_1[0] - 5110.1
 
