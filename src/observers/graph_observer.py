@@ -33,19 +33,19 @@ class GraphObserver(StateObserver):
     agent_state_0 = self._select_state_by_index(world.agents[100].state)
     agent_state_1 = self._select_state_by_index(world.agents[101].state)
     # node values
-    graph[0, 2] = np.cos(agent_state_0[2])*agent_state_0[3]
-    graph[0, 3] = np.sin(agent_state_0[2])*agent_state_0[3]
-    graph[1, 2] = np.cos(agent_state_1[2])*agent_state_1[3]
-    graph[1, 3] = np.sin(agent_state_1[2])*agent_state_1[3]
+    graph[0, 2] = np.cos(agent_state_0[2])*agent_state_0[3]/20.
+    graph[0, 3] = np.sin(agent_state_0[2])*agent_state_0[3]/20.
+    graph[1, 2] = np.cos(agent_state_1[2])*agent_state_1[3]/20.
+    graph[1, 3] = np.sin(agent_state_1[2])*agent_state_1[3]/20.
     # distance to goal perserved in node values
-    graph[0, 4] = agent_state_0[0] - 5114
-    graph[1, 4] = agent_state_1[0] - 5110.1
+    graph[0, 4] = (agent_state_0[0] - 5114)/20.
+    graph[1, 4] = (agent_state_1[0] - 5110.1)/100.
 
     # edge values
-    graph[0, 5] = agent_state_1[0] - agent_state_0[0]
-    graph[0, 6] = agent_state_1[1] - agent_state_0[1]
-    graph[1, 5] = agent_state_0[0] - agent_state_1[0]
-    graph[1, 6] = agent_state_0[1] - agent_state_1[1]
+    graph[0, 5] = (agent_state_1[0] - agent_state_0[0])/20.
+    graph[0, 6] = (agent_state_1[1] - agent_state_0[1])/100.
+    graph[1, 5] = (agent_state_0[0] - agent_state_1[0])/20.
+    graph[1, 6] = (agent_state_0[1] - agent_state_1[1])/100.
 
     # TODO(@hart): plot graph in viewer
     return graph
