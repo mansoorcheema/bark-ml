@@ -35,7 +35,6 @@ flags.DEFINE_enum('mode',
 def run_configuration(argv):
   params = ParameterServer(filename="configurations/sac_highway/config.json")
   configuration = SACHighwayConfiguration(params)
-  
   if FLAGS.mode == 'train':
     configuration.train()
   elif FLAGS.mode == 'visualize':
