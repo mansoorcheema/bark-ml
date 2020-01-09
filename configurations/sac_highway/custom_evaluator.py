@@ -29,17 +29,9 @@ class CustomEvaluator(GoalReached):
   def distance_to_goal(self, world):
     d = 0.
     for i, agent in world.agents.items():
-      shape = agent.shape
       state = agent.state
-      pose = np.zeros(3)
-      pose[0] = state[int(StateDefinition.X_POSITION)]
-      pose[1] = state[int(StateDefinition.Y_POSITION)]
-      pose[2] = state[int(StateDefinition.THETA_POSITION)]
-      transformed_polygon = shape.transform(pose)
-      # TODO(@hart): scenario generation should support sequential goal
       goal_poly = agent.goal_definition.goal_shape
-      # goal_poly = agent.goal_definition.goal_shape
-      d += distance(transformed_polygon, goal_poly)
+      d += distance(goal_poly, Point2d(state[1], state[2]))
     d /= i
     return d
 

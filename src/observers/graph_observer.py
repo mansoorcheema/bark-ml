@@ -33,22 +33,26 @@ class GraphObserver(StateObserver):
     agent_state_0 = self._select_state_by_index(world.agents[100].state)
     agent_state_1 = self._select_state_by_index(world.agents[101].state)
     # node values
-    graph[0, 2] = np.cos(agent_state_0[2])*agent_state_0[3]
-    graph[0, 3] = np.sin(agent_state_0[2])*agent_state_0[3]
-    graph[1, 2] = np.cos(agent_state_1[2])*agent_state_1[3]
-    graph[1, 3] = np.sin(agent_state_1[2])*agent_state_1[3]
+    graph[0, 2] = self._norm(np.cos(agent_state_0[2])*agent_state_0[3], [-1., 1.])
+    graph[0, 3] = self._norm(np.sin(agent_state_0[2])*agent_state_0[3], [0., 20.])
+    graph[1, 2] = self._norm(np.cos(agent_state_1[2])*agent_state_1[3], [-1., 1.])
+    graph[1, 3] = self._norm(np.sin(agent_state_1[2])*agent_state_1[3], [0., 20.])
+
     # distance to goal perserved in node values
-    graph[0, 4] = agent_state_0[0] - 5114
-    graph[1, 4] = agent_state_1[0] - 5110.1
+    graph[0, 4] = self._norm(agent_state_0[0] - 5114, [-4., 4.])
+    graph[1, 4] = self._norm(agent_state_1[0] - 5110.1, [-4., 4.])
 
     # edge values
-    graph[0, 5] = agent_state_1[0] - agent_state_0[0]
-    graph[0, 6] = agent_state_1[1] - agent_state_0[1]
-    graph[1, 5] = agent_state_0[0] - agent_state_1[0]
-    graph[1, 6] = agent_state_0[1] - agent_state_1[1]
+    graph[0, 5] = self._norm(agent_state_1[0] - agent_state_0[0], [-4., 4.])
+    graph[0, 6] = self._norm(agent_state_1[1] - agent_state_0[1], [-100., 100.])
+    graph[1, 5] = self._norm(agent_state_0[0] - agent_state_1[0], [-4., 4.])
+    graph[1, 6] = self._norm(agent_state_0[1] - agent_state_1[1], [-100., 100.])
 
     # TODO(@hart): plot graph in viewer
     return graph
+  
+  def _norm(self, state, range):
+    return (state - range[0])/(range[1]-range[0])
 
   def reset(self, world, agents_to_observe):
     super(GraphObserver, self).reset(world, agents_to_observe)
