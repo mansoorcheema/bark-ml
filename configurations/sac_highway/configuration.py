@@ -36,6 +36,7 @@ def run_configuration(argv):
   params = ParameterServer(filename="configurations/sac_highway/config.json")
   configuration = SACHighwayConfiguration(params)
   if FLAGS.mode == 'train':
+    configuration._runner.setup_writer()
     configuration.train()
   elif FLAGS.mode == 'visualize':
     configuration.visualize(10)
