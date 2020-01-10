@@ -34,15 +34,18 @@ flags.DEFINE_enum('mode',
                   'train',
                   ['train', 'visualize', 'evaluate'],
                   'Mode the configuration should be executed in.')
+flags.DEFINE_string('base_dir',
+                    os.path.dirname(
+                      os.path.dirname(os.path.dirname(__file__))),
+                    'Base directory of bark-ml.')
 
 def run_configuration(argv):
-  base_dir = os.path.dirname(
-    os.path.dirname(os.path.dirname(__file__)))
-  params = ParameterServer(filename=base_dir + "/configurations/sac_highway/config.json")
-  scenario_generation = params["Scenario"]["Generation"]["DeterministicScenarioGeneration"]
+  params = ParameterServer(
+    filename=FLAGS.base_dir + "/configurations/sac_highway/config.json")
+  scenario_generation = params["Scenario"]["Generation"]["DeterministicScenarioGeneration"]  # NOLINT
   map_filename = scenario_generation["MapFilename"]
-  scenario_generation["MapFilename"] = base_dir + "/" + map_filename
-  params["BaseDir"] = base_dir
+  scenario_generation["MapFilename"] = FLAGS.base_dir + "/" + map_filename
+  params["BaseDir"] = FLAGS.base_dir
   configuration = SACHighwayConfiguration(params)
   
   if FLAGS.mode == 'train':
@@ -50,7 +53,6 @@ def run_configuration(argv):
     configuration.train()
   elif FLAGS.mode == 'visualize':
     configuration.visualize(10)
-    # configuration._viewer.export_video("/home/hart/Dokumente/2019/bark-ml/configurations/sac_highway/video/lane_merge")
   elif FLAGS.mode == 'evaluate':
     configuration.evaluate()
 
