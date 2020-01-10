@@ -1,3 +1,6 @@
+# import matplotlib as mpl
+# mpl.use('Agg')
+import os
 from absl import app
 from absl import flags
 import tensorflow as tf
@@ -28,12 +31,18 @@ from configurations.sac_highway.configuration_lib import SACHighwayConfiguration
 
 FLAGS = flags.FLAGS
 flags.DEFINE_enum('mode',
-                  'visualize',
+                  'train',
                   ['train', 'visualize', 'evaluate'],
                   'Mode the configuration should be executed in.')
 
 def run_configuration(argv):
-  params = ParameterServer(filename="configurations/sac_highway/config.json")
+  base_dir = os.path.dirname(
+    os.path.dirname(os.path.dirname(__file__)))
+  params = ParameterServer(filename=base_dir + "/configurations/sac_highway/config.json")
+  scenario_generation = params["Scenario"]["Generation"]["DeterministicScenarioGeneration"]
+  map_filename = scenario_generation["MapFilename"]
+  scenario_generation["MapFilename"] = base_dir + "/" + map_filename
+  params["BaseDir"] = base_dir
   configuration = SACHighwayConfiguration(params)
   
   if FLAGS.mode == 'train':

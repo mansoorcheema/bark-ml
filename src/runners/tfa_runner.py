@@ -47,7 +47,9 @@ class TFARunner(BaseRunner):
   def setup_writer(self):
     if self._params["ML"]["Runner"]["summary_path"] is not None:
       self._summary_writer = tf.summary.create_file_writer(
-        self._params["ML"]["Runner"]["summary_path"])
+        self._params["BaseDir"] + "/" + self._params["ML"]["Runner"]["summary_path"])
+    self.get_initial_collection_driver()
+    self.get_collection_driver()
 
   def get_initial_collection_driver(self):
     """Sets the initial collection driver for tf-agents.
@@ -58,8 +60,8 @@ class TFARunner(BaseRunner):
         policy=self._agent._agent.collect_policy,
         observers=[self._agent._replay_buffer.add_batch],
         num_episodes=self._params["ML"]["Runner"]["initial_collection_steps"])
-    # self._initial_collection_driver.run = common.function(
-    #   self._initial_collection_driver.run)
+    self._initial_collection_driver.run = common.function(
+      self._initial_collection_driver.run)
 
   def get_collection_driver(self):
     """Sets the collection driver for tf-agents.
@@ -69,7 +71,7 @@ class TFARunner(BaseRunner):
       policy=self._agent._agent.collect_policy,
       observers=[self._agent._replay_buffer.add_batch],
       num_episodes=self._params["ML"]["Runner"]["collection_episodes_per_cycle"])
-    # self._collection_driver.run = common.function(self._collection_driver.run)
+    self._collection_driver.run = common.function(self._collection_driver.run)
 
   def collect_initial_episodes(self):
     """Function that collects the initial episodes

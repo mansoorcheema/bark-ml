@@ -106,11 +106,11 @@
                               0.0
                           ],
                           [
-                              1.0,
+                              0.5,
                               0.0
                           ],
                           [
-                              1.0,
+                              0.5,
                               300.0
                           ],
                           [
@@ -231,11 +231,11 @@
                               0.0
                           ],
                           [
-                              1.0,
+                              0.5,
                               0.0
                           ],
                           [
-                              1.0,
+                              0.5,
                               300.0
                           ],
                           [
@@ -275,8 +275,8 @@
         "alpha_learning_rate": 3e-4,
         "target_update_tau": 0.05,
         "target_update_period": 3,
-        "gamma": 0.99,
-        "reward_scale_factor": 5.0,
+        "gamma": 0.995,
+        "reward_scale_factor": 3.0,
         "gradient_clipping": null, 
         "agent_name": "sac_agent",
         "debug_summaries": "True",
@@ -287,7 +287,7 @@
         "num_parallel_environments": 30,
         "buffer_num_steps": 2,
         "buffer_prefetch": 3,
-        "checkpoint_path": "/home/hart/Dokumente/2020/bark-ml/configurations/sac_highway/checkpoints/"
+        "checkpoint_path": "configurations/sac_highway/checkpoints/"
       },
       "Evaluator": {
         "max_steps": 60,
@@ -302,16 +302,21 @@
       },
       "Runner": {
         "number_of_collections": 100000,
-        "initial_collection_steps": 1,
+        "initial_collection_steps": 10,
         "collection_episodes_per_cycle": 1,
-        "evaluate_every_n_steps": 250,
-        "evaluation_steps": 25,
-        "summary_path": "/home/hart/Dokumente/2020/bark-ml/configurations/sac_highway/summaries/"
+        "evaluate_every_n_steps": 20,
+        "evaluation_steps": 5,
+        "summary_path": "configurations/sac_highway/summaries/"
       },
       "DynamicModel": {
-        "action_dimension": 4,
-        "actions_lower_bound": [-1.0, -0.1, -1.0, -0.1],
-        "actions_upper_bound": [1.0, 0.1, 1.0, 0.1]
+        "action_dimension": 2,
+        "action_num": 2,
+        "actions_lower_bound": [-1.0, -0.1],
+        "actions_upper_bound": [1.0, 0.1]
       }
-  } 
+  },
+  "World": {
+    "recalculate_driving_corridor": false,
+    "update_horizon_corridor": false
+  }
 }

@@ -36,14 +36,19 @@ class CustomEvaluator(GoalReached):
     return d
 
   def calculate_reward(self, world, eval_results, action):
+    success = eval_results["goal_reached"]
+    collision = eval_results["collision"]
+
     distance_to_goals = self.distance_to_goal(world)
     actions = np.reshape(action, (-1, 2))
     accs = actions[:, 0]
     delta = actions[:, 1]
 
     # TODO(@hart): use parameter server
-    inpt_reward = np.sum((1/0.15*delta)**2 + (accs)**2)
-    reward = 20 - distance_to_goals - inpt_reward
+    inpt_reward = 4.*np.sum((1/0.15*delta)**2 + (accs)**2)
+    reward = collision * self._collision_penalty + \
+      success * self._goal_reward - inpt_reward + \
+      0.1*distance_to_goals 
     return reward
 
   def _evaluate(self, world, eval_results, action):
