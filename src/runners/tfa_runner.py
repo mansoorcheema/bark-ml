@@ -46,8 +46,11 @@ class TFARunner(BaseRunner):
 
   def setup_writer(self):
     if self._params["ML"]["Runner"]["summary_path"] is not None:
-      self._summary_writer = tf.summary.create_file_writer(
-        self._params["BaseDir"] + "/" + self._params["ML"]["Runner"]["summary_path"])
+      try:
+        self._summary_writer = tf.summary.create_file_writer(
+          self._params["BaseDir"] + "/" + self._params["ML"]["Runner"]["summary_path"])
+      except:
+        pass
     self.get_initial_collection_driver()
     self.get_collection_driver()
 
