@@ -1,6 +1,6 @@
 import os
 import matplotlib
-matplotlib.use('Agg')
+# matplotlib.use('Agg')
 
 from absl import app
 from absl import flags
