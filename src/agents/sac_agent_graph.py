@@ -57,24 +57,24 @@ class SACGraphAgent(TFAAgent):
 
     actor_cgnn = GNNWrapper(
       node_layers_def=[
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 256, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 256, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
       edge_layers_def=[
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 256, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 256, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
       h0_dim=3,
       e0_dim=2)
 
     critic_cgnn = GNNWrapper(
       node_layers_def=[
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 256, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 256, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
       edge_layers_def=[
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 256, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 256, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
       h0_dim=3,
       e0_dim=2)
@@ -82,12 +82,12 @@ class SACGraphAgent(TFAAgent):
     actor_net = CGNNNetwork(
       env.observation_spec(),
       env.action_spec(),
-      fc_layer_params=(80,),
+      fc_layer_params=tuple(
+        self._params["ML"]["Agent"]["actor_fc_layer_params"]),
       cgnn=actor_cgnn)
 
     critic_net = CGNNCriticNetwork(
       (env.observation_spec(), env.action_spec()),
-      observation_fc_layer_params=(80,),
       action_fc_layer_params=None,
       joint_fc_layer_params=tuple(
         self._params["ML"]["Agent"]["critic_joint_fc_layer_params"]),
