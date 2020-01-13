@@ -88,6 +88,7 @@ class SACAgent(TFAAgent):
       name=self._params["ML"]["Agent"]["agent_name"],
       debug_summaries=self._params["ML"]["Agent"]["debug_summaries"])
     tf_agent.initialize()
+    tf_agent._train = common.function(tf_agent._train)
     return tf_agent
 
   def get_replay_buffer(self):

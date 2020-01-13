@@ -268,8 +268,8 @@
   },
   "ML": {
       "Agent": {
-        "actor_fc_layer_params": [512, 256, 256],
-        "critic_joint_fc_layer_params": [512, 256, 256],
+        "actor_fc_layer_params": [256],
+        "critic_joint_fc_layer_params": [256],
         "actor_learning_rate": 3e-4,
         "critic_learning_rate": 3e-4,
         "alpha_learning_rate": 3e-4,
@@ -303,7 +303,7 @@
       "Runner": {
         "number_of_collections": 250000,
         "initial_collection_steps": 10,
-        "collection_episodes_per_cycle": 1,
+        "collection_episodes_per_cycle": 10,
         "evaluate_every_n_steps": 500,
         "evaluation_steps": 25,
         "summary_path": "configurations/sac_highway/summaries/"

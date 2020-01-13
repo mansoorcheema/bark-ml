@@ -34,7 +34,7 @@ class SACRunner(TFARunner):
                        agent=agent,
                        params=params,
                        unwrapped_runtime=unwrapped_runtime)
-
+    
   def train(self):
     """Wrapper that sets the summary writer.
        This enables a seamingless integration with TensorBoard.
@@ -93,8 +93,10 @@ class SACRunner(TFARunner):
     for _ in range(0, self._params["ML"]["Runner"]["number_of_collections"]):
       global_iteration = self._agent._agent._train_step_counter.numpy()
       self._collection_driver.run()
+
       experience, _ = next(iterator)
       self._agent._agent.train(experience)
+
       if global_iteration % self._params["ML"]["Runner"]["evaluate_every_n_steps"] == 0:
         self.evaluate()
         self._agent.save()

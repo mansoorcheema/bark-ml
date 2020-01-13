@@ -8,7 +8,6 @@
 
 ## Singularity
 `sudo singularity build bark_ml.img Singularity`
-`sbash run.sh`
 `bash upload_image.sh hart`
 
 ## Cluster
