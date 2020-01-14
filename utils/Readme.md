@@ -12,6 +12,7 @@
 
 ## Cluster
 Mount drive:
+`sudo mkdir -p /mnt/glusterdata`
 `sudo mount -t glusterfs -o acl fortiss-8gpu:/data /mnt/glusterdata`
 
 also ssh key:

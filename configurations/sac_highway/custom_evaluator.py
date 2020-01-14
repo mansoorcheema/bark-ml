@@ -50,6 +50,7 @@ class CustomEvaluator(GoalReached):
     reward = collision * self._collision_penalty + \
       success * self._goal_reward - inpt_reward - \
       0.1*distance_to_goals + drivable_area * self._collision_penalty
+
     return reward
 
   def _evaluate(self, world, eval_results, action):
@@ -62,7 +63,7 @@ class CustomEvaluator(GoalReached):
     step_count = eval_results["step_count"]
 
     reward = self.calculate_reward(world, eval_results, action)    
-    if success or collision or step_count > self._max_steps or drivable_area:
+    if step_count > self._max_steps or collision or drivable_area:
       done = True
     return reward, done, eval_results
     
