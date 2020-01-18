@@ -20,7 +20,7 @@ class CustomEvaluator(GoalReached):
                          eval_agent)
 
   def _add_evaluators(self):
-    self._evaluators["goal_reached"] = EvaluatorGoalReached(self._controlled_agents[0])
+    self._evaluators["goal_reached"] = EvaluatorGoalReached()
     self._evaluators["drivable_area"] = EvaluatorDrivableArea()
     self._evaluators["collision"] = \
       EvaluatorCollisionAgents()
