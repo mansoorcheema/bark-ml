@@ -50,9 +50,9 @@ class CustomEvaluator(GoalReached):
     drivable_area = eval_results["drivable_area"]
 
     distance_to_goals = self.distance_to_goal(world)
-    # actions = np.reshape(action, (-1, 2))
-    # accs = actions[:, 0]
-    # delta = actions[:, 1]
+    actions = np.reshape(action, (-1, 2))
+    accs = actions[:, 0]
+    delta = actions[:, 1]
 
     # TODO(@hart): use parameter server
     inpt_reward = np.sqrt(np.sum((1/0.15*delta)**2 + (accs)**2))
