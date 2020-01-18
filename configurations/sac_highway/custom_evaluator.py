@@ -28,7 +28,8 @@ class CustomEvaluator(GoalReached):
 
   def distance_to_goal(self, world):
     d = 0.
-    for i, agent in world.agents.items():
+    for idx in self._controlled_agents:
+      agent = world.agents[idx]
       state = agent.state
       goal_poly = agent.goal_definition.goal_shape
       # TODO(@hart): fix.. offset 0.75 so we drive to the middle of the polygon
@@ -38,8 +39,8 @@ class CustomEvaluator(GoalReached):
   def deviation_velocity(self, world):
     desired_v = 10.
     delta_v = 0.
-    for i, agent in world.agents.items():
-      vel = agent.state[int(StateDefinition.VEL_POSITION)]
+    for idx in self._controlled_agents:
+      vel = world.agents[idx].state[int(StateDefinition.VEL_POSITION)]
       delta_v += (desired_v-vel)**2
     return delta_v
   
