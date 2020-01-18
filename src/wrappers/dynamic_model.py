@@ -35,6 +35,8 @@ class DynamicModel(ActionWrapper):
       self._behavior_models.append(DynamicBehaviorModel(self._dynamic_model,
                                                         self._params))
       if agent_id in world.agents:
+        a = np.zeros(shape=(2,))
+        self._behavior_models[-1].set_last_action(a)
         world.agents[agent_id].behavior_model = self._behavior_models[-1]
       else:
         raise ValueError("AgentID does not exist in world.")
