@@ -41,7 +41,7 @@ class CustomEvaluator(GoalReached):
     for i, agent in world.agents.items():
       vel = agent.state[int(StateDefinition.VEL_POSITION)]
       delta_v += (desired_v-vel)**2
-    return delta_v/i
+    return delta_v
   
   def calculate_reward(self, world, eval_results, action):
     success = eval_results["goal_reached"]
@@ -55,8 +55,8 @@ class CustomEvaluator(GoalReached):
 
     # TODO(@hart): use parameter server
     inpt_reward = np.sqrt(np.sum((1/0.15*delta)**2 + (accs)**2))
-    reward = collision * self._collision_penalty + \
-      success * self._goal_reward - inpt_reward - \
+    reward = 1. - collision * self._collision_penalty + \
+      success * self._goal_reward - 0.01*inpt_reward - \
       0.1*distance_to_goals + drivable_area * self._collision_penalty - \
       0.1*self.deviation_velocity(world)
     return reward
