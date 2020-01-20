@@ -20,7 +20,8 @@ class CustomEvaluator(GoalReached):
                          eval_agent)
 
   def _add_evaluators(self):
-    self._evaluators["goal_reached"] = EvaluatorGoalReached()
+    self._evaluators["goal_reached"] = EvaluatorGoalReached(
+      self._controlled_agents[0])
     self._evaluators["drivable_area"] = EvaluatorDrivableArea()
     self._evaluators["collision"] = \
       EvaluatorCollisionAgents()
@@ -33,7 +34,7 @@ class CustomEvaluator(GoalReached):
       state = agent.state
       goal_poly = agent.goal_definition.goal_shape
       # TODO(@hart): fix.. offset 0.75 so we drive to the middle of the polygon
-      d += distance(goal_poly, Point2d(state[1], state[2]))
+      d += distance(goal_poly, Point2d(state[1] + 0.75, state[2]))
     return d
 
   def deviation_velocity(self, world):
