@@ -29,7 +29,7 @@ class CustomEvaluator(GoalReached):
 
   def distance_to_goal(self, world):
     d = 0.
-    for idx in [100]:
+    for idx in self._controlled_agents:
       agent = world.agents[idx]
       state = agent.state
       goal_poly = agent.goal_definition.goal_shape
@@ -40,7 +40,7 @@ class CustomEvaluator(GoalReached):
   def deviation_velocity(self, world):
     desired_v = 10.
     delta_v = 0.
-    for idx in [100]:
+    for idx in self._controlled_agents:
       vel = world.agents[idx].state[int(StateDefinition.VEL_POSITION)]
       delta_v += (desired_v-vel)**2
     return delta_v
@@ -72,6 +72,7 @@ class CustomEvaluator(GoalReached):
     drivable_area = eval_results["drivable_area"]
     step_count = eval_results["step_count"]
 
+    print("Drivable area: {}, Collision: {}.".format(str(drivable_area), str(collision)))
     reward = self.calculate_reward(world, eval_results, action)    
     if step_count > self._max_steps or collision or drivable_area or success:
       done = True
