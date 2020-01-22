@@ -57,24 +57,24 @@ class SACGraphAgent(TFAAgent):
 
     actor_cgnn = GNNWrapper(
       node_layers_def=[
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 16, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 16, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
       edge_layers_def=[
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 16, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 16, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
       h0_dim=3,
       e0_dim=2)
 
     critic_cgnn = GNNWrapper(
       node_layers_def=[
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 16, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 16, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
       edge_layers_def=[
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 16, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 16, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
       h0_dim=3,
       e0_dim=2)

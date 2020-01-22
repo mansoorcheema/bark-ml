@@ -351,6 +351,7 @@
                         ]
                     },
                     "goal": {
+                      "goal_type": "GoalStateLimits",
                       "polygon_points": [
                           [
                               0.0,
@@ -394,8 +395,8 @@
   },
   "ML": {
       "Agent": {
-        "actor_fc_layer_params": [256, 128],
-        "critic_joint_fc_layer_params": [256, 128],
+        "actor_fc_layer_params": [128, 64],
+        "critic_joint_fc_layer_params": [128, 64],
         "actor_learning_rate": 1e-5,
         "critic_learning_rate": 1e-5,
         "alpha_learning_rate": 1e-5,
