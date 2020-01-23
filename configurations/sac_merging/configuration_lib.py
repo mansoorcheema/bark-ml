@@ -45,14 +45,15 @@ class SACHighwayConfiguration(BaseConfiguration):
       DeterministicScenarioGeneration(num_scenarios=20,
                                       random_seed=0,
                                       params=self._params)
-    self._observer = GraphObserver(params=self._params)
+    # self._observer = GraphObserver(params=self._params)
+    self._observer = ClosestAgentsObserver(params=self._params)
     self._behavior_model = DynamicModel(params=self._params)
     self._evaluator = CustomEvaluator(params=self._params)
     viewer = MPViewer(params=self._params,
-                      use_world_bounds=True)
-                      # x_range=[-30, 30],
-                      # y_range=[-30, 30],
-                      # follow_agent_id=100)
+                      # use_world_bounds=True)
+                      x_range=[-30, 30],
+                      y_range=[-30, 30],
+                      follow_agent_id=100)
     self._viewer = viewer
     self._runtime = RuntimeRL(action_wrapper=self._behavior_model,
                               observer=self._observer,
@@ -64,7 +65,8 @@ class SACHighwayConfiguration(BaseConfiguration):
     # tfa_env = tf_py_environment.TFPyEnvironment(
     #   parallel_py_environment.ParallelPyEnvironment(
     #     [lambda: TFAWrapper(self._runtime)] * self._params["ML"]["Agent"]["num_parallel_environments"]))
-    self._agent = SACGraphAgent(tfa_env, params=self._params)
+    # self._agent = SACGraphAgent(tfa_env, params=self._params)
+    self._agent = SACAgent(tfa_env, params=self._params)
     self._runner = SACRunner(tfa_env,
                              self._agent,
                              params=self._params,

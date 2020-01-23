@@ -17,8 +17,8 @@
                     "id": 100,
                     "state": [
                         [0.0, 0.0],
-                        [-110.0, -115.0],
-                        [-99.54, -99.54],
+                        [-123.73, -113.78],
+                        [-99.18, -99.18],
                         [3.09, 3.09],
                         [9.0, 11.0]
                     ],
@@ -137,15 +137,15 @@
                   },
                   {
                     "VehicleModel": {
-                    "behavior_model": "BehaviorConstantVelocity",
+                    "behavior_model": "BehaviorIDMClassic",
                     "dynamic_model": "SingleTrackModel",
                     "execution_model": "ExecutionModelInterpolate",
                     "id": 101,
                     "state": [
                         [0.0, 0.0],
-                        [-110.0, -115.0],
-                        [-102.54, -102.54],
-                        [3.14, 3.14],
+                        [-139.1, -129.1],
+                        [-100.64, -103.23],
+                        [3.09, 3.09],
                         [9.0, 11.0]
                     ],
                     "color": "red",
@@ -262,15 +262,15 @@
                   },
                   {
                     "VehicleModel": {
-                    "behavior_model": "BehaviorConstantVelocity",
+                    "behavior_model": "BehaviorIDMClassic",
                     "dynamic_model": "SingleTrackModel",
                     "execution_model": "ExecutionModelInterpolate",
                     "id": 102,
                     "state": [
                         [0.0, 0.0],
-                        [-130.0, -140.0],
-                        [-102.54, -102.54],
-                        [3.14, 3.14],
+                        [-120.1, -108.1],
+                        [-100.84, -103.23],
+                        [3.09, 3.09],
                         [9.0, 11.0]
                     ],
                     "color": "red",
