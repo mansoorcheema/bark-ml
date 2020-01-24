@@ -26,6 +26,7 @@ class GraphObserverV2(StateObserver):
     self._num_nearest_vehicles = num_nearest_vehicles
     self._max_num_vehicles = max_num_vehicles
     self._observation_len = self._max_num_vehicles*self._len_state
+    self._initial_lane_corr = None
 
 
   def OrderedAgentIds(self, world, agents_to_observe):
@@ -52,16 +53,42 @@ class GraphObserverV2(StateObserver):
 
   def CalculateNodeValue(self, world, agent_id):
     agent = world.agents[agent_id]
+    agent_point = Point2d(
+      agent.state[int(StateDefinition.X_POSITION)],
+      agent.state[int(StateDefinition.Y_POSITION)])
     goal_poly = agent.goal_definition.goal_shape
     reduced_state = self._select_state_by_index(agent.state)
     vx = np.cos(reduced_state[2])*reduced_state[3]
     vy = np.sin(reduced_state[2])*reduced_state[3]
     d_goal = 0.
-    # d_goal = SignedDistance(
-    #   goal_poly,
-    #   Point2d(reduced_state[0], reduced_state[1]),
-    #   reduced_state[2])
-    n_vx = self._norm(vx, [-1., 1.])
+
+    if agent.road_corridor:
+      lane_corrs = agent.road_corridor.GetLeftRightLaneCorridor(agent_point)
+    # if there is a left lane_corr use this for the distance calc.
+    # if not the distance is 0 as the agent is traveling on the goal
+
+      if lane_corrs[0] is not None:
+        left_lane_corr = lane_corrs[0]
+        lane_line = left_lane_corr.center_line
+        print("left_lane_corr", left_lane_corr)
+        d_goal = SignedDistance(
+          lane_line,
+          Point2d(reduced_state[0], reduced_state[1]),
+          reduced_state[2])
+        print("left_d_goal", d_goal)
+      else:
+        if agent.road_corridor:
+          lane_corr = agent.road_corridor.GetCurrentLaneCorridor(agent_point)
+          lane_line = lane_corr.center_line
+          print("current_lane_corr", lane_corr)
+          d_goal = SignedDistance(
+            lane_line,
+            Point2d(reduced_state[0], reduced_state[1]),
+            reduced_state[2])
+          print("current_d_goal", d_goal)
+          
+    # print("distance to goal:", d_goal)
+    n_vx = self._norm(vx, [-2., 2.])
     n_vy = self._norm(vy, [0., 20.])
     n_d_goal = self._norm(d_goal, [-4., 4.])
     return np.array([n_vx, n_vy, n_d_goal], dtype=np.float32)

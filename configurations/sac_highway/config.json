@@ -17,7 +17,7 @@
                     "id": 100,
                     "state": [
                         [0.0, 0.0],
-                        [5113.8, 5113.8],
+                        [5117.5, 5117.5],
                         [5106.8305, 5110.8305],
                         [1.57, 1.57],
                         [9.0, 11.0]
@@ -101,6 +101,7 @@
                         ]
                     },
                     "goal": {
+                      "goal_type": "GoalDefinitionStateLimits",
                       "polygon_points": [
                           [
                               0.0,
@@ -124,11 +125,11 @@
                           ]
                       ],
                       "center_pose": [
-                          5110.0,
+                          5113.5,
                           5050.8305,
                           0.0
                       ],
-                      "num_reached": 5
+                      "num_reached": 10
                     },
                     "followed_trajectory": [],
                     "planned_trajectory": []
@@ -142,7 +143,7 @@
                     "id": 101,
                     "state": [
                         [0.0, 0.0],
-                        [5111.0, 5111.0],
+                        [5114.2, 5114.2],
                         [5115.8305, 5120.8305],
                         [1.57, 1.57],
                         [9.0, 11.0]
@@ -249,7 +250,7 @@
                           ]
                       ],
                       "center_pose": [
-                          5113.6,
+                          5117.5,
                           5050.8305,
                           0.0
                       ],
@@ -267,7 +268,7 @@
                     "id": 102,
                     "state": [
                         [0.0, 0.0],
-                        [5111.0, 5111.0],
+                        [5114.2, 5114.2],
                         [5090.8305, 5100.8305],
                         [1.57, 1.57],
                         [9.0, 11.0]
@@ -375,7 +376,7 @@
                           ]
                       ],
                       "center_pose": [
-                          5113.6,
+                          5117.5,
                           5050.8305,
                           0.0
                       ],
@@ -386,7 +387,7 @@
                     }
                   }
               ],
-              "controlled_ids": [100, 101, 102]
+              "controlled_ids": [100]
           }
       }
   },
@@ -417,7 +418,7 @@
         "checkpoint_path": "configurations/sac_highway/checkpoints/"
       },
       "Evaluator": {
-        "max_steps": 60,
+        "max_steps": 40,
         "collision_penalty": -10.0,
         "goal_reward": 10.0
       },
@@ -441,9 +442,5 @@
         "actions_lower_bound": [-1.0, -0.15],
         "actions_upper_bound": [1.0, 0.15]
       }
-  },
-  "World": {
-    "recalculate_driving_corridor": false,
-    "update_horizon_corridor": false
   }
 }
