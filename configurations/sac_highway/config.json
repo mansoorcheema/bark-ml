@@ -137,7 +137,7 @@
                   },
                   {
                     "VehicleModel": {
-                    "behavior_model": "BehaviorIDMClassic",
+                    "behavior_model": "BehaviorConstantVelocity",
                     "dynamic_model": "SingleTrackModel",
                     "execution_model": "ExecutionModelInterpolate",
                     "id": 101,
@@ -262,7 +262,7 @@
                   },
                   {
                     "VehicleModel": {
-                    "behavior_model": "BehaviorIDMClassic",
+                    "behavior_model": "BehaviorConstantVelocity",
                     "dynamic_model": "SingleTrackModel",
                     "execution_model": "ExecutionModelInterpolate",
                     "id": 102,
@@ -387,7 +387,7 @@
                     }
                   }
               ],
-              "controlled_ids": [100]
+              "controlled_ids": [100, 101, 102]
           }
       }
   },
