@@ -431,7 +431,7 @@
         "number_of_collections": 250000,
         "initial_collection_steps": 10,
         "collection_episodes_per_cycle": 1,
-        "evaluate_every_n_steps": 500,
+        "evaluate_every_n_steps": 2500,
         "evaluation_steps": 5,
         "summary_path": "configurations/sac_highway/summaries/"
       },

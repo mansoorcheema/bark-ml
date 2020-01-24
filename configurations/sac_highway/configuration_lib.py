@@ -16,6 +16,7 @@ from modules.runtime.viewer.video_renderer import VideoRenderer
 from src.rl_runtime import RuntimeRL
 from src.observers.nearest_state_observer import ClosestAgentsObserver
 from src.observers.graph_observer import GraphObserver
+from src.observers.graph_observer_v2 import GraphObserverV2
 from src.wrappers.dynamic_model import DynamicModel
 from src.wrappers.tfa_wrapper import TFAWrapper
 from src.evaluators.goal_reached import GoalReached
@@ -45,7 +46,7 @@ class SACHighwayConfiguration(BaseConfiguration):
       DeterministicScenarioGeneration(num_scenarios=20,
                                       random_seed=0,
                                       params=self._params)
-    self._observer = GraphObserver(params=self._params)
+    self._observer = GraphObserverV2(params=self._params)
     self._behavior_model = DynamicModel(params=self._params)
     self._evaluator = CustomEvaluator(params=self._params)
     viewer = MPViewer(params=self._params,
