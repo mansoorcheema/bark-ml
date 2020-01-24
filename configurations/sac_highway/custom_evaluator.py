@@ -34,7 +34,7 @@ class CustomEvaluator(GoalReached):
       state = agent.state
       goal_poly = agent.goal_definition.goal_shape
       # TODO(@hart): fix.. offset 0.75 so we drive to the middle of the polygon
-      d += distance(goal_poly, Point2d(state[1] + 0.75, state[2]))
+      d += Distance(goal_poly, Point2d(state[1] + 0.75, state[2]))
     return d
 
   def deviation_velocity(self, world):

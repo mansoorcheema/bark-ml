@@ -2,7 +2,7 @@
 from gym import spaces
 import numpy as np
 from bark.models.dynamic import StateDefinition
-from bark.geometry import distance, Point2d
+from bark.geometry import Point2d, SignedDistance
 from modules.runtime.commons.parameters import ParameterServer
 import math
 import operator
@@ -56,9 +56,11 @@ class GraphObserverV2(StateObserver):
     reduced_state = self._select_state_by_index(agent.state)
     vx = np.cos(reduced_state[2])*reduced_state[3]
     vy = np.sin(reduced_state[2])*reduced_state[3]
-    d_goal = distance(
-      goal_poly,
-      Point2d(reduced_state[0], reduced_state[1]))
+    d_goal = 0.
+    # d_goal = SignedDistance(
+    #   goal_poly,
+    #   Point2d(reduced_state[0], reduced_state[1]),
+    #   reduced_state[2])
     n_vx = self._norm(vx, [-1., 1.])
     n_vy = self._norm(vy, [0., 20.])
     n_d_goal = self._norm(d_goal, [-4., 4.])
