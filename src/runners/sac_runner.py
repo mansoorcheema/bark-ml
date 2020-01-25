@@ -104,9 +104,12 @@ class SACRunner(TFARunner):
   def visualize(self, num_episodes=1):
     # Ticket (https://github.com/tensorflow/agents/issues/59) recommends
     # to do the rendering in the original environment
-    for _ in range(0, num_episodes):
+    for i in range(0, num_episodes):
       state = self._unwrapped_runtime.reset()
       is_terminal = False
+      print("================ EPISODE {} ================".format(
+        str(i)
+      ))
       while not is_terminal:
         action_step = self._agent._eval_policy.action(
           ts.transition(state, reward=0.0, discount=1.0))

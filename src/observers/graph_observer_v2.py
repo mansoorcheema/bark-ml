@@ -68,10 +68,8 @@ class GraphObserverV2(StateObserver):
         center_line,
         Point2d(reduced_state[0], reduced_state[1]),
         reduced_state[2])
-      print("left_d_goal", d_goal)
-    
     # print("distance to goal:", d_goal)
-    n_vx = self._norm(vx, [-2., 2.])
+    n_vx = self._norm(vx, [-8., 8.])
     n_vy = self._norm(vy, [0., 20.])
     n_d_goal = self._norm(d_goal, [-4., 4.])
     return np.array([n_vx, n_vy, n_d_goal], dtype=np.float32)
@@ -112,8 +110,7 @@ class GraphObserverV2(StateObserver):
           self.CalculateEdgeValue(world, from_id, agent_id)
         edge_row_idx += 1
       node_row_idx += 1
-    return gen_graph
-    # graph = -1.*np.ones(shape=(7, 7), dtype=np.float32)
+    graph = -1.*np.ones(shape=(7, 7), dtype=np.float32)
     # # connections
     # graph[0, 0] = 0
     # graph[0, 1] = 1
@@ -168,6 +165,9 @@ class GraphObserverV2(StateObserver):
 
     # graph[5, 5] = self._norm(agent_state_1[0] - agent_state_2[0], [-4., 4.])
     # graph[5, 6] = self._norm(agent_state_1[1] - agent_state_2[1], [-100., 100.])
+    # print(graph, gen_graph)
+    return gen_graph
+    
     # return graph
   
   def _norm(self, state, range):

@@ -43,7 +43,7 @@ class SACHighwayConfiguration(BaseConfiguration):
     """Builds a configuration using an SAC agent
     """
     self._scenario_generator = \
-      DeterministicScenarioGeneration(num_scenarios=20,
+      DeterministicScenarioGeneration(num_scenarios=250,
                                       random_seed=0,
                                       params=self._params)
     self._observer = GraphObserverV2(params=self._params)
