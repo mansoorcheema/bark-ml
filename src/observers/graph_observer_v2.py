@@ -53,14 +53,10 @@ class GraphObserverV2(StateObserver):
 
   def CalculateNodeValue(self, world, agent_id):
     agent = world.GetAgent(agent_id)
-    agent_point = Point2d(
-      agent.state[int(StateDefinition.X_POSITION)],
-      agent.state[int(StateDefinition.Y_POSITION)])
     reduced_state = self._select_state_by_index(agent.state)
     vx = np.cos(reduced_state[2])*reduced_state[3]
     vy = np.sin(reduced_state[2])*reduced_state[3]
     d_goal = 0.
-
     if agent.road_corridor:
       goal_lane_corr = agent.road_corridor.lane_corridors[0]
       center_line = goal_lane_corr.center_line
@@ -69,6 +65,7 @@ class GraphObserverV2(StateObserver):
         Point2d(reduced_state[0], reduced_state[1]),
         reduced_state[2])
     # print("distance to goal:", d_goal)
+    # print("agent_id", vx, vy, d_goal)
     n_vx = self._norm(vx, [-8., 8.])
     n_vy = self._norm(vy, [0., 20.])
     n_d_goal = self._norm(d_goal, [-4., 4.])
@@ -78,9 +75,10 @@ class GraphObserverV2(StateObserver):
     from_agent = world.agents[from_id]
     to_agent = world.agents[to_id]
     reduced_from_state = self._select_state_by_index(from_agent.state)
-    reduced_to_agente = self._select_state_by_index(to_agent.state)
-    dx = reduced_to_agente[0] - reduced_from_state[0]
-    dy = reduced_to_agente[1] - reduced_from_state[1]
+    reduced_to_state = self._select_state_by_index(to_agent.state)
+    dx = reduced_to_state[0] - reduced_from_state[0]
+    dy = reduced_to_state[1] - reduced_from_state[1]
+    # print("from_id: ", from_id, ", to_id:", to_id, ", dx: ", dx, ", dy: ", dy)
     n_dx = self._norm(dx, [-4., 4.])
     n_dy = self._norm(dy, [-100., 100.])
     return np.array([n_dx, n_dy], dtype=np.float32)

@@ -1,7 +1,7 @@
 import numpy as np
 from bark.world.evaluation import \
   EvaluatorGoalReached, EvaluatorCollisionAgents, \
-  EvaluatorStepCount, EvaluatorDrivableArea
+  EvaluatorStepCount, EvaluatorDrivableArea, EvaluatorCollisionEgoAgent
 from modules.runtime.commons.parameters import ParameterServer
 from bark.geometry import *
 from bark.models.dynamic import StateDefinition
@@ -24,7 +24,7 @@ class CustomEvaluator(GoalReached):
       self._controlled_agents[0])
     self._evaluators["drivable_area"] = EvaluatorDrivableArea()
     self._evaluators["collision"] = \
-      EvaluatorCollisionAgents()
+      EvaluatorCollisionEgoAgent(self._controlled_agents[0])
     self._evaluators["step_count"] = EvaluatorStepCount()
 
   def distance_to_goal(self, world):
@@ -32,7 +32,6 @@ class CustomEvaluator(GoalReached):
     for idx in [100]:
       agent = world.agents[idx]
       state = agent.state
-      goal_poly = agent.goal_definition.goal_shape
       # TODO(@hart): fix.. offset 0.75 so we drive to the middle of the polygon
       center_line = agent.road_corridor.lane_corridors[0].center_line
       d += Distance(center_line, Point2d(state[1], state[2]))
@@ -58,10 +57,9 @@ class CustomEvaluator(GoalReached):
 
     # TODO(@hart): use parameter server
     inpt_reward = np.sqrt(np.sum((1/0.15*delta)**2 + (accs)**2))
-    reward = 1. - collision * self._collision_penalty + \
-      success * self._goal_reward - 0.01*inpt_reward - \
-      0.1*distance_to_goals + drivable_area * self._collision_penalty - \
-      0.1*self.deviation_velocity(world)
+    reward = collision * self._collision_penalty + \
+      success * self._goal_reward - \
+      0.1*distance_to_goals + drivable_area * self._collision_penalty
     return reward
 
   def _evaluate(self, world, eval_results, action):
