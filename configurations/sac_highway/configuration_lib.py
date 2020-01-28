@@ -43,9 +43,10 @@ class SACHighwayConfiguration(BaseConfiguration):
     """Builds a configuration using an SAC agent
     """
     self._scenario_generator = \
-      DeterministicScenarioGeneration(num_scenarios=250,
+      DeterministicScenarioGeneration(num_scenarios=25,
                                       random_seed=0,
                                       params=self._params)
+    # self._observer = ClosestAgentsObserver(params=self._params)
     self._observer = GraphObserverV2(params=self._params)
     self._behavior_model = DynamicModel(params=self._params)
     self._evaluator = CustomEvaluator(params=self._params)
@@ -65,6 +66,7 @@ class SACHighwayConfiguration(BaseConfiguration):
     #   parallel_py_environment.ParallelPyEnvironment(
     #     [lambda: TFAWrapper(self._runtime)] * self._params["ML"]["Agent"]["num_parallel_environments"]))
     self._agent = SACGraphAgent(tfa_env, params=self._params)
+    # self._agent = SACAgent(tfa_env, params=self._params)
     self._runner = SACRunner(tfa_env,
                              self._agent,
                              params=self._params,

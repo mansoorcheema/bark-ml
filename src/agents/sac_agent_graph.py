@@ -14,7 +14,7 @@ from tf_agents.trajectories import time_step as ts
 from src.agents.tfa_agent import TFAAgent
 
 from source.gnn_wrapper import GNNWrapper
-from source.tfa_actor_net import CGNNNetwork
+from source.tfa_actor_net import CGNNActorNetwork
 from source.tfa_critic_net import CGNNCriticNetwork
 
 
@@ -79,7 +79,7 @@ class SACGraphAgent(TFAAgent):
       h0_dim=3,
       e0_dim=2)
 
-    actor_net = CGNNNetwork(
+    actor_net = CGNNActorNetwork(
       env.observation_spec(),
       env.action_spec(),
       fc_layer_params=tuple(
