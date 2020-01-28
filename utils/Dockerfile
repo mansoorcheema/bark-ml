@@ -14,7 +14,6 @@ RUN bash /tmp/installers/install_python_venv.sh
 RUN pip3 install --upgrade pip
 RUN pip3 install virtualenv
 RUN pip3 install -r /tmp/requirements.txt
-RUN pip3 install tensorflow-gpu==2.1.0
 
 
 RUN apt-get update

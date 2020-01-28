@@ -1,8 +1,5 @@
 Bootstrap: docker
-From: tensorflow/tensorflow:latest-gpu-py3
-
-pip3 install -r ./requirements.txt
-pip install tensorflow-gpu==2.1.0
+From: barksim/bark-ml:latest
 
 % environment
 export MPLBACKEND="agg"
