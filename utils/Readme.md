@@ -4,7 +4,7 @@
 `docker login`
 `docker build -t barksim/bark-ml .`
 `docker push barksim/bark-ml:latest`
-`docker prune -a`
+`docker system prune -a`
 
 ## Singularity
 `sudo singularity build bark_ml.img Singularity`
