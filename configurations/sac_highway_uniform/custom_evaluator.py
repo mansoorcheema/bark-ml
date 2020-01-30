@@ -1,9 +1,10 @@
 import numpy as np
 from bark.world.evaluation import \
-  EvaluatorGoalReached, EvaluatorCollisionEgoAgent, \
-  EvaluatorStepCount, EvaluatorDrivableArea
+  EvaluatorGoalReached, EvaluatorCollisionAgents, \
+  EvaluatorStepCount, EvaluatorDrivableArea, EvaluatorCollisionEgoAgent
 from modules.runtime.commons.parameters import ParameterServer
 from bark.geometry import *
+from bark.models.dynamic import StateDefinition
 
 from src.evaluators.goal_reached import GoalReached
 
@@ -19,48 +20,60 @@ class CustomEvaluator(GoalReached):
                          eval_agent)
 
   def _add_evaluators(self):
-    self._evaluators["goal_reached"] = EvaluatorGoalReached(self._eval_agent)
-    self._evaluators["ego_collision"] = \
-      EvaluatorCollisionEgoAgent(self._eval_agent)
-    self._evaluators["step_count"] = EvaluatorStepCount()
+    self._evaluators["goal_reached"] = EvaluatorGoalReached(
+      self._controlled_agents[0])
     self._evaluators["drivable_area"] = EvaluatorDrivableArea()
+    self._evaluators["collision"] = \
+      EvaluatorCollisionEgoAgent(self._controlled_agents[0])
+    self._evaluators["step_count"] = EvaluatorStepCount()
 
-  def _distance_to_center_line(self, world):
-    """calculates the distance of the agent
-       to its centerline
-    
-    Arguments:
-        world {bark.world} -- bark world
-    
-    Returns:
-        float -- distance to centerline
-    """
-    agent = world.agents[self._eval_agent]
-    agent_state = agent.state
-    # centerline = agent.local_map.get_driving_corridor().center
-    # TODO(@hart): HACK; to see whether a lane-change can be learned
-    #agent_xy = Point2d(agent.state[1] + 4., agent.state[2])
-    return 0 # distance(centerline, agent_xy)
+  def distance_to_goal(self, world):
+    d = 0.
+    for idx in [self._eval_agent]:
+      agent = world.agents[idx]
+      state = agent.state
+      # TODO(@hart): fix.. offset 0.75 so we drive to the middle of the polygon
+      center_line = agent.road_corridor.lane_corridors[0].center_line
+      d += Distance(center_line, Point2d(state[1], state[2]))
+    return d
+
+  def deviation_velocity(self, world):
+    desired_v = 10.
+    delta_v = 0.
+    for idx in [self._eval_agent]:
+      vel = world.agents[idx].state[int(StateDefinition.VEL_POSITION)]
+      delta_v += (desired_v-vel)**2
+    return delta_v
+  
+  def calculate_reward(self, world, eval_results, action):
+    success = eval_results["goal_reached"]
+    collision = eval_results["collision"]
+    drivable_area = eval_results["drivable_area"]
+
+    distance_to_goals = self.distance_to_goal(world)
+    actions = np.reshape(action, (-1, 2))
+    accs = actions[:, 0]
+    delta = actions[:, 1]
+
+    # TODO(@hart): use parameter server
+    inpt_reward = np.sqrt(np.sum((1/0.15*delta)**2 + (accs)**2))
+    reward = collision * self._collision_penalty + \
+      success * self._goal_reward - \
+      0.001*distance_to_goals**2 + drivable_area * self._collision_penalty - 0.01*self.deviation_velocity(world)
+
+    return reward
 
   def _evaluate(self, world, eval_results, action):
     """Returns information about the current world state
     """
-    # should read parameter that has been set in the observer
-    # print(self._params["ML"]["Maneuver"]["lane_change"])
-    agent_state = world.agents[self._eval_agent].state
     done = False
     success = eval_results["goal_reached"]
-    distance = self._distance_to_center_line(world)
-    collision = eval_results["ego_collision"]
-    step_count = eval_results["step_count"]
+    collision = eval_results["collision"]
     drivable_area = eval_results["drivable_area"]
-    # determine whether the simulation should terminate
-    if success or collision or step_count > self._max_steps or drivable_area:
+    step_count = eval_results["step_count"]
+
+    reward = self.calculate_reward(world, eval_results, action)    
+    if step_count > self._max_steps or collision or drivable_area or success:
       done = True
-    # calculate reward
-    reward = collision * self._collision_penalty + \
-      success * self._goal_reward - 0.1*distance + \
-      drivable_area * self._collision_penalty
     return reward, done, eval_results
     
-

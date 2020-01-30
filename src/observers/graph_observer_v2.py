@@ -124,7 +124,7 @@ class GraphObserverV2(StateObserver):
     return spaces.Box(
       low=0.,
       high=1.,
-      shape=(7, 7))
+      shape=(self._max_num_vehicles*self._num_nearest_vehicles + 1, 7))
 
   @property
   def _len_state(self):

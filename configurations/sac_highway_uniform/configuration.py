@@ -8,6 +8,7 @@ from absl import app
 from absl import flags
 import tensorflow as tf
 from tf_agents.environments import tf_py_environment
+from tf_agents.environments import parallel_py_environment
 
 from modules.runtime.scenario.scenario_generation.uniform_vehicle_distribution \
   import UniformVehicleDistribution
@@ -61,15 +62,16 @@ class SACHighwayConfiguration(BaseConfiguration):
                                  random_seed=0,
                                  params=self._params)
     # self._observer = ClosestAgentsObserver(params=self._params)
-    self._observer = GraphObserverV2(params=self._params)
+    self._observer = GraphObserverV2(max_num_vehicles=15,
+                                     params=self._params)
     self._behavior_model = DynamicModel(params=self._params)
     self._evaluator = CustomEvaluator(params=self._params)
 
     self._viewer  = MPViewer(params=self._params,
-                             use_world_bounds=True)
-                            # x_range=[-20,20],
-                            # y_range=[-20,20],
-                            # follow_agent_id=True)
+                            #  use_world_bounds=True)
+                            x_range=[-40, 40],
+                            y_range=[-40, 40],
+                            follow_agent_id=True)
     #self._viewer = VideoRenderer(renderer=viewer, world_step_time=0.2)
     self._runtime = RuntimeRL(action_wrapper=self._behavior_model,
                               observer=self._observer,
@@ -78,10 +80,14 @@ class SACHighwayConfiguration(BaseConfiguration):
                               viewer=self._viewer,
                               scenario_generator=self._scenario_generator)
 
-    tfa_env = tf_py_environment.TFPyEnvironment(TFAWrapper(self._runtime))
+    tfa_env = tf_py_environment.TFPyEnvironment(
+      parallel_py_environment.ParallelPyEnvironment(
+        [lambda: TFAWrapper(self._runtime)] * self._params["ML"]["Agent"]["num_parallel_environments"]))
+    eval_tfa_env = tf_py_environment.TFPyEnvironment(TFAWrapper(self._runtime))
     # self._agent = SACAgent(tfa_env, params=self._params)
     self._agent = PPOAgentGNN(tfa_env, params=self._params)
     self._runner = PPORunner(tfa_env,
+                             eval_tfa_env,
                              self._agent,
                              params=self._params,
                              unwrapped_runtime=self._runtime)
@@ -95,8 +101,10 @@ def run_configuration(argv):
   configuration = SACHighwayConfiguration(params)
   
   if FLAGS.mode == 'train':
+    configuration._runner.setup_writer()
     configuration.train()
   elif FLAGS.mode == 'visualize':
+    params["ML"]["Agent"]["num_parallel_environments"] = 1
     configuration.visualize(10)
     # configuration._viewer.export_video("/home/hart/Dokumente/2019/bark-ml/configurations/sac_highway_uniform/video/lane_merge")
   elif FLAGS.mode == 'evaluate':
