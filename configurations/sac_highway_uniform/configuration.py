@@ -68,10 +68,10 @@ class SACHighwayConfiguration(BaseConfiguration):
     self._evaluator = CustomEvaluator(params=self._params)
 
     self._viewer  = MPViewer(params=self._params,
-                            #  use_world_bounds=True)
-                            x_range=[-40, 40],
-                            y_range=[-40, 40],
-                            follow_agent_id=True)
+                             use_world_bounds=True)
+                            # x_range=[-40, 40],
+                            # y_range=[-40, 40],
+                            # follow_agent_id=True)
     #self._viewer = VideoRenderer(renderer=viewer, world_step_time=0.2)
     self._runtime = RuntimeRL(action_wrapper=self._behavior_model,
                               observer=self._observer,
