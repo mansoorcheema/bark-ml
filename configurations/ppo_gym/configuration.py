@@ -1,8 +1,9 @@
-import coloredlogs, logging
+import logging
 from absl import app
 from absl import flags
 import tensorflow as tf
 import gym
+import os
 
 from tf_agents.environments import tf_py_environment
 from tf_agents.environments import parallel_py_environment
@@ -15,7 +16,6 @@ from src.runners.ppo_runner import PPORunner
 from configurations.base_configuration import BaseConfiguration
 
 # configuration specific evaluator
-coloredlogs.install()
 logger = logging.getLogger()
 
 FLAGS = flags.FLAGS
@@ -23,8 +23,12 @@ flags.DEFINE_enum('mode',
                   'visualize',
                   ['train', 'visualize', 'evaluate'],
                   'Mode the configuration should be executed in.')
+flags.DEFINE_string('base_dir',
+                    os.path.dirname(
+                      os.path.dirname(os.path.dirname(__file__))),
+                    'Base directory of bark-ml.')
 
-class PPODroneChallenge(BaseConfiguration):
+class PPOGym(BaseConfiguration):
   """Hermetic and reproducible configuration class
   """
   def __init__(self,
@@ -54,8 +58,9 @@ class PPODroneChallenge(BaseConfiguration):
                              unwrapped_runtime=self._runtime)
 
 def run_configuration(argv):
-  params = ParameterServer(filename="configurations/ppo_gym/config.json")
-  configuration = PPODroneChallenge(params)
+  params = ParameterServer(filename=FLAGS.base_dir + "configurations/ppo_gym/config.json")
+  params["BaseDir"] = FLAGS.base_dir
+  configuration = PPOGym(params)
   
   if FLAGS.mode == 'train':
     configuration.train()

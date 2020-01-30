@@ -5,6 +5,7 @@ py_library(
             "sac_agent_graph.py",
             "td3_agent.py",
             "ppo_agent.py",
+            "ppo_agent_gnn.py",
             "tfa_agent.py"],
     visibility = ["//visibility:public"],
     deps = ["@icml2020//source:gnn_wrapper",

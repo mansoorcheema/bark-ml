@@ -27,6 +27,7 @@ class PPORunner(TFARunner):
   """
   def __init__(self,
                runtime=None,
+               eval_runtime=None,
                agent=None,
                params=ParameterServer(),
                unwrapped_runtime=None):
@@ -35,19 +36,20 @@ class PPORunner(TFARunner):
                        agent=agent,
                        params=params,
                        unwrapped_runtime=unwrapped_runtime)
+    self._eval_runtime = eval_runtime
 
   def _train(self):
     """Trains the agent as specified in the parameter file
     """
     # iterator = iter(self._agent._dataset)
-    for _ in range(0, self._params["ML"]["Runner"]["number_of_collections"]):
+    for i in range(0, self._params["ML"]["Runner"]["number_of_collections"]):
       global_iteration = self._agent._agent._train_step_counter.numpy()
       self._collection_driver.run()
       trajectories = self._agent._replay_buffer.gather_all()
       self._agent._agent.train(experience=trajectories)
       self._agent._replay_buffer.clear()
-      if global_iteration % self._params["ML"]["Runner"]["evaluate_every_n_steps"] == 0:
-        # self.evaluate()
+      if i % self._params["ML"]["Runner"]["evaluate_every_n_steps"] == 0:
+        self.evaluate()
         self._agent.save()
 
   def evaluate(self):
@@ -58,9 +60,9 @@ class PPORunner(TFARunner):
       .format(str(self._params["ML"]["Runner"]["evaluation_steps"])))
     metric_utils.eager_compute(
       self._eval_metrics,
-      self._runtime,
+      self._eval_runtime,
       self._agent._agent.policy,
-      num_episodes=30*self._params["ML"]["Runner"]["evaluation_steps"])
+      num_episodes=self._params["ML"]["Runner"]["evaluation_steps"])
     metric_utils.log_metrics(self._eval_metrics)
     tf.summary.scalar("mean_reward",
                       self._eval_metrics[0].result().numpy(),

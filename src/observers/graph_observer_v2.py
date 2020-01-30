@@ -122,8 +122,8 @@ class GraphObserverV2(StateObserver):
   @property
   def observation_space(self):
     return spaces.Box(
-      low=-1.,
-      high=5.,
+      low=0.,
+      high=1.,
       shape=(7, 7))
 
   @property

@@ -14,7 +14,7 @@ from tf_agents.trajectories import time_step as ts
 from src.agents.tfa_agent import TFAAgent
 
 from source.gnn_wrapper import GNNWrapper
-from source.tfa_actor_net import CGNNActorNetwork
+from source.tfa_actor_net import GNNActorNetwork
 from source.tfa_critic_net import CGNNCriticNetwork
 
 
@@ -58,9 +58,11 @@ class SACGraphAgent(TFAAgent):
     actor_cgnn = GNNWrapper(
       node_layers_def=[
         {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
         {"units" : 80, "activation": "sigmoid", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
       edge_layers_def=[
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
         {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
         {"units" : 80, "activation": "sigmoid", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
@@ -70,9 +72,11 @@ class SACGraphAgent(TFAAgent):
     critic_cgnn = GNNWrapper(
       node_layers_def=[
         {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
         {"units" : 80, "activation": "sigmoid", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
       edge_layers_def=[
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
         {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
         {"units" : 80, "activation": "sigmoid", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],

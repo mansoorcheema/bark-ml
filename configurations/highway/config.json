@@ -137,7 +137,7 @@
                   },
                   {
                     "VehicleModel": {
-                    "behavior_model": "BehaviorConstantVelocity",
+                    "behavior_model": "BehaviorIDMClassic",
                     "dynamic_model": "SingleTrackModel",
                     "execution_model": "ExecutionModelInterpolate",
                     "id": 101,
@@ -146,7 +146,7 @@
                         [5114.2, 5114.2],
                         [5115.8305, 5120.8305],
                         [1.57, 1.57],
-                        [9.0, 11.0]
+                        [14.0, 15.0]
                     ],
                     "color": "red",
                     "shape": {
@@ -262,7 +262,7 @@
                   },
                   {
                     "VehicleModel": {
-                    "behavior_model": "BehaviorConstantVelocity",
+                    "behavior_model": "BehaviorIDMClassic",
                     "dynamic_model": "SingleTrackModel",
                     "execution_model": "ExecutionModelInterpolate",
                     "id": 102,
@@ -271,7 +271,7 @@
                         [5114.2, 5114.2],
                         [5090.8305, 5100.8305],
                         [1.57, 1.57],
-                        [9.0, 11.0]
+                        [14.0, 15.0]
                     ],
                     "color": "red",
                     "shape": {
@@ -395,9 +395,9 @@
     "MaxHistoryLength": 50
   },
   "ML": {
-      "Agent": {
-        "actor_fc_layer_params": [256, 128],
-        "critic_joint_fc_layer_params": [256, 128],
+      "AgentOLD": {
+        "actor_fc_layer_params": [128],
+        "critic_joint_fc_layer_params": [128],
         "actor_learning_rate": 3e-4,
         "critic_learning_rate": 3e-4,
         "alpha_learning_rate": 3e-4,
@@ -411,12 +411,35 @@
         "replay_buffer_capacity": 10000,
         "max_ckpts_to_keep": 3,
         "parallel_buffer_calls": 3,
-        "batch_size": 256,
+        "batch_size": 512,
         "num_parallel_environments": 1,
         "buffer_num_steps": 2,
         "buffer_prefetch": 3,
-        "checkpoint_path": "configurations/sac_highway/checkpoints/"
+        "checkpoint_path": "configurations/highway/checkpoints/"
       },
+      "Agent": {
+        "actor_fc_layer_params": [256],
+        "critic_fc_layer_params": [256],
+        "learning_rate": 1e-3,
+        "num_epochs": 30,
+        "agent_name": "ppo_agent",
+        "debug_summaries": false,
+        "replay_buffer_capacity": 10000,
+        "max_ckpts_to_keep": 3,
+        "num_parallel_environments": 30,
+        "parallel_buffer_calls": 1,
+        "buffer_num_steps": 1,
+        "buffer_prefetch": 1,
+        "checkpoint_path": "configurations/highway/checkpoints/"
+    },
+    "Runner": {
+        "number_of_collections": 550000,
+        "initial_collection_steps": 25,
+        "collection_episodes_per_cycle": 2,
+        "evaluate_every_n_steps": 25,
+        "evaluation_steps": 25,
+        "summary_path": "configurations/highway/summaries/"
+    },
       "Evaluator": {
         "max_steps": 60,
         "collision_penalty": -1.0,
@@ -427,14 +450,6 @@
         "theta_range": [-3.14, 3.14],
         "normalization_enabled": true,
         "max_num_agents": 2
-      },
-      "Runner": {
-        "number_of_collections": 250000,
-        "initial_collection_steps": 0,
-        "collection_episodes_per_cycle": 1,
-        "evaluate_every_n_steps": 500,
-        "evaluation_steps": 5,
-        "summary_path": "configurations/sac_highway/summaries/"
       },
       "DynamicModel": {
         "action_dimension": 2,
