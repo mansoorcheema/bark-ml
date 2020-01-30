@@ -46,17 +46,23 @@ class HighwayConfiguration(BaseConfiguration):
     """Builds a configuration using an agent
     """
     self._scenario_generator = \
-      DeterministicScenarioGeneration(num_scenarios=25,
+      DeterministicScenarioGeneration(num_scenarios=250,
                                       random_seed=0,
                                       params=self._params)
     # self._observer = ClosestAgentsObserver(params=self._params)
-    self._observer = GraphObserverV2(params=self._params)
+    if self._params["type"] == "graph":
+      self._observer = GraphObserverV2(params=self._params,
+                                       max_num_vehicles=10)
+    else:
+      self._observer = ClosestAgentsObserver(params=self._params)
+
     self._behavior_model = DynamicModel(params=self._params)
     self._evaluator = CustomEvaluator(params=self._params)
     viewer = MPViewer(params=self._params,
-                      x_range=[-30, 30],
-                      y_range=[-30, 30],
-                      follow_agent_id=100)
+                      use_world_bounds=True)
+                      # x_range=[-30, 30],
+                      # y_range=[-30, 30],
+                      # follow_agent_id=100)
     self._viewer = viewer
     self._runtime = RuntimeRL(action_wrapper=self._behavior_model,
                               observer=self._observer,
@@ -71,7 +77,10 @@ class HighwayConfiguration(BaseConfiguration):
     # self._agent = SACGraphAgent(tfa_env, params=self._params)
     # self._agent = SACAgent(tfa_env, params=self._params)
     # self._agent = PPOAgent(tfa_env, params=self._params)
-    self._agent = PPOAgentGNN(tfa_env, params=self._params)
+    if self._params["type"] == "graph":
+      self._agent = PPOAgentGNN(tfa_env, params=self._params)
+    else:
+      self._agent = PPOAgent(tfa_env, params=self._params)
     self._runner = PPORunner(tfa_env,
                              eval_tf_env,
                              self._agent,

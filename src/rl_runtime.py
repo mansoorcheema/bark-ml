@@ -39,6 +39,8 @@ class RuntimeRL(Runtime):
                                         self._scenario._eval_agent_ids)
     self._world = self._action_wrapper.reset(self._world,
                                              self._scenario._eval_agent_ids)
+    # HACK(@all): as long as it is not done in BARK
+    self._world.UpdateAgentRTree()
     return self._observer.observe(
       world=self._world,
       agents_to_observe=self._scenario._eval_agent_ids)

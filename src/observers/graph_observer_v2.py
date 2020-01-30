@@ -33,7 +33,7 @@ class GraphObserverV2(StateObserver):
     agent_id_list = []
     for oid in agents_to_observe:
       agent_id_list.append(oid)
-    for agent_id, agent in world.agents.items():
+    for agent_id, _ in world.agents.items():
       if agent_id not in agents_to_observe:
         agent_id_list.append(agent_id)
     return agent_id_list
