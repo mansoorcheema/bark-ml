@@ -38,7 +38,7 @@ class CustomEvaluator(GoalReached):
     return d
 
   def deviation_velocity(self, world):
-    desired_v = 10.
+    desired_v = 15.
     delta_v = 0.
     for idx in [100]:
       vel = world.agents[idx].state[int(StateDefinition.VEL_POSITION)]
