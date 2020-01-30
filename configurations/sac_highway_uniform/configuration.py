@@ -24,8 +24,10 @@ from src.wrappers.dynamic_model import DynamicModel
 from src.wrappers.tfa_wrapper import TFAWrapper
 from src.evaluators.goal_reached import GoalReached
 from src.agents.sac_agent import SACAgent
-from src.agents.sac_agent_graph import SACGraphAgent
+from src.agents.ppo_agent_gnn import PPOAgentGNN
 from src.runners.sac_runner import SACRunner
+from src.runners.ppo_runner import PPORunner
+from src.observers.graph_observer_v2 import GraphObserverV2
 from configurations.base_configuration import BaseConfiguration
 
 # configuration specific evaluator
@@ -58,7 +60,8 @@ class SACHighwayConfiguration(BaseConfiguration):
       UniformVehicleDistribution(num_scenarios=20,
                                  random_seed=0,
                                  params=self._params)
-    self._observer = ClosestAgentsObserver(params=self._params)
+    # self._observer = ClosestAgentsObserver(params=self._params)
+    self._observer = GraphObserverV2(params=self._params)
     self._behavior_model = DynamicModel(params=self._params)
     self._evaluator = CustomEvaluator(params=self._params)
 
@@ -76,8 +79,9 @@ class SACHighwayConfiguration(BaseConfiguration):
                               scenario_generator=self._scenario_generator)
 
     tfa_env = tf_py_environment.TFPyEnvironment(TFAWrapper(self._runtime))
-    self._agent = SACAgent(tfa_env, params=self._params)
-    self._runner = SACRunner(tfa_env,
+    # self._agent = SACAgent(tfa_env, params=self._params)
+    self._agent = PPOAgentGNN(tfa_env, params=self._params)
+    self._runner = PPORunner(tfa_env,
                              self._agent,
                              params=self._params,
                              unwrapped_runtime=self._runtime)
