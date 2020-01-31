@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 if os.environ.get('DISPLAY') == ':0':
@@ -58,6 +59,8 @@ def run_configuration(argv):
       scenario_generator.get_next_scenario()
     world = scenario.get_world_state()
 
+    deltas = []
+    accs = []
     for _ in range(0, 10):
       agent_state = world.agents[102].state
       agent_state[2] += 2.
@@ -67,10 +70,17 @@ def run_configuration(argv):
       time_step = ts.transition(observed_state, reward=0.0, discount=1.0)
       action = eval_policy.action(time_step)
       print(action)
-      viewer.drawWorld(world)
-      viewer.show(block=False)
-      plt.pause(2.)
-    viewer.show(block=True)
+      deltas.append(action.action[1])
+      accs.append(action.action[0])
+      #viewer.drawWorld(world)
+      #viewer.show(block=False)
+      #plt.pause(2.)
+    np_deltas = np.array(deltas)
+    np_accs = np.array(accs)
+    plt.plot(deltas, color="blue")
+    # plt.plot(np_accs, color="red")
+    plt.show()
+    #viewer.show(block=True)
   
 
 
