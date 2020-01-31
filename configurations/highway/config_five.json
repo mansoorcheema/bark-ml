@@ -648,8 +648,8 @@
   },
   "ML": {
     "Agent": {
-        "actor_fc_layer_params": [256],
-        "critic_fc_layer_params": [256],
+        "actor_fc_layer_params": [256, 128],
+        "critic_fc_layer_params": [256, 128],
         "learning_rate": 1e-3,
         "num_epochs": 30,
         "agent_name": "ppo_agent",

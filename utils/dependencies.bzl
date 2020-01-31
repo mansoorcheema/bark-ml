@@ -13,12 +13,12 @@ def load_bark():
   _maybe(
     native.local_repository,
     name = "icml2020",
-    path="/Users/hart/2020/icml2020",
+    path="/home/hart/Dokumente/2020/icml2020",
   )
   _maybe(
     native.local_repository,
     name = "gnn_lib",
-    path="/Users/hart/2020/gnn",
+    path="/home/hart/Dokumente/2020/gcn",
   )
   _maybe(
     git_repository,

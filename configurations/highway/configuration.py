@@ -32,7 +32,7 @@ flags.DEFINE_enum('type',
 
 def run_configuration(argv):
   params = ParameterServer(
-    filename=FLAGS.base_dir + "/configurations/highway/config_five.json")
+    filename=FLAGS.base_dir + "/configurations/highway/config_three.json")
   scenario_generation = params["Scenario"]["Generation"]["DeterministicScenarioGeneration"]  # NOLINT
   map_filename = scenario_generation["MapFilename"]
   scenario_generation["MapFilename"] = FLAGS.base_dir + "/" + map_filename
@@ -59,9 +59,9 @@ def run_configuration(argv):
     world = scenario.get_world_state()
 
     for _ in range(0, 10):
-      agent_state = world.agents[104].state
+      agent_state = world.agents[102].state
       agent_state[2] += 2.
-      world.agents[104].SetState(agent_state)
+      world.agents[102].SetState(agent_state)
       world.UpdateAgentRTree()
       observed_state = observer.observe(world, agents_to_observe=[100])
       time_step = ts.transition(observed_state, reward=0.0, discount=1.0)
