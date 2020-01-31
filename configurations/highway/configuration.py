@@ -33,7 +33,7 @@ flags.DEFINE_enum('type',
 
 def run_configuration(argv):
   params = ParameterServer(
-    filename=FLAGS.base_dir + "/configurations/highway/config_three.json")
+    filename=FLAGS.base_dir + "/configurations/highway/config_five.json")
   scenario_generation = params["Scenario"]["Generation"]["DeterministicScenarioGeneration"]  # NOLINT
   map_filename = scenario_generation["MapFilename"]
   scenario_generation["MapFilename"] = FLAGS.base_dir + "/" + map_filename
