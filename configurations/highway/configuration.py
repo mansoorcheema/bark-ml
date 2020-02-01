@@ -49,6 +49,7 @@ def run_configuration(argv):
     configuration.visualize(10)
   elif FLAGS.mode == 'evaluate':
     configuration.evaluate()
+    print(configuration._runtime._collision_count)
   elif FLAGS.mode == 'ablation':
     # caution: use 5 vehicles
     eval_policy = configuration._agent._agent.policy
@@ -62,23 +63,23 @@ def run_configuration(argv):
     deltas = []
     accs = []
     for _ in range(0, 10):
-      agent_state = world.agents[102].state
+      agent_state = world.agents[104].state
       agent_state[2] += 2.
-      world.agents[102].SetState(agent_state)
+      world.agents[104].SetState(agent_state)
       world.UpdateAgentRTree()
       observed_state = observer.observe(world, agents_to_observe=[100])
       time_step = ts.transition(observed_state, reward=0.0, discount=1.0)
       action = eval_policy.action(time_step)
-      print(action)
+      # print(action)
       deltas.append(action.action[1])
       accs.append(action.action[0])
-      #viewer.drawWorld(world)
-      #viewer.show(block=False)
-      #plt.pause(2.)
+      # viewer.drawWorld(world)
+      # viewer.show(block=False)
+      # plt.pause(1.)
     np_deltas = np.array(deltas)
     np_accs = np.array(accs)
-    plt.plot(deltas, color="blue")
-    # plt.plot(np_accs, color="red")
+    plt.plot(np_deltas, color="blue")
+    plt.plot(np_accs, color="red")
     plt.show()
     #viewer.show(block=True)
   

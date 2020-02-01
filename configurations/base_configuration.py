@@ -33,7 +33,7 @@ class BaseConfiguration:
     """
     self._runner.visualize(num_episodes)
 
-  def evaluate(self):
+  def evaluate(self, num=25):
     """Evaluates the agent
     """
-    self._runner.evaluate()
+    self._runner.evaluate(num)

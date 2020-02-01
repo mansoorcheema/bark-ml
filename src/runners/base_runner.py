@@ -23,7 +23,7 @@ class BaseRunner(ABC):
     """
 
   @abstractmethod
-  def evaluate(self):
+  def evaluate(self, num):
     """Evaluates the agent for a given number of episodes
     """
     pass

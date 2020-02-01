@@ -24,6 +24,7 @@ class RuntimeRL(Runtime):
     self._action_wrapper = action_wrapper
     self._observer = observer
     self._evaluator = evaluator
+    self._collision_count = 0
 
     # make viewers available
     self._observer.set_viewer(viewer)
@@ -93,6 +94,8 @@ class RuntimeRL(Runtime):
       world=self._world,
       agents_to_observe=controlled_agents)
     reward, done, info = self._evaluator.evaluate(world=world, action=action)
+    if info["collision"] == True:
+      self._collision_count += 1
     return next_state, reward, done, info
 
 
