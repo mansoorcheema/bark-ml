@@ -29,7 +29,7 @@ class CustomEvaluator(GoalReached):
 
   def distance_to_goal(self, world):
     d = 0.
-    for idx in [self._eval_agent]:
+    for idx in [100]:
       agent = world.agents[idx]
       state = agent.state
       # TODO(@hart): fix.. offset 0.75 so we drive to the middle of the polygon
@@ -38,9 +38,9 @@ class CustomEvaluator(GoalReached):
     return d
 
   def deviation_velocity(self, world):
-    desired_v = 10.
+    desired_v = 15.
     delta_v = 0.
-    for idx in [self._eval_agent]:
+    for idx in [100]:
       vel = world.agents[idx].state[int(StateDefinition.VEL_POSITION)]
       delta_v += (desired_v-vel)**2
     return delta_v
@@ -59,7 +59,7 @@ class CustomEvaluator(GoalReached):
     inpt_reward = np.sqrt(np.sum((1/0.15*delta)**2 + (accs)**2))
     reward = collision * self._collision_penalty + \
       success * self._goal_reward - 0.01*inpt_reward - \
-      0.001*distance_to_goals**2 + drivable_area * self._collision_penalty - 0.01*self.deviation_velocity(world)
+      0.001*distance_to_goals**2 + drivable_area * self._collision_penalty
 
     return reward
 

@@ -28,9 +28,9 @@ from src.runners.sac_runner import SACRunner
 from configurations.base_configuration import BaseConfiguration
 
 # configuration specific evaluator
-from configurations.sac_highway.custom_evaluator import CustomEvaluator
-from configurations.sac_highway.custom_observer import CustomObserver
-from configurations.sac_highway.configuration_lib import SACHighwayConfiguration
+from configurations.sac_merging.custom_evaluator import CustomEvaluator
+from configurations.sac_merging.custom_observer import CustomObserver
+from configurations.sac_merging.configuration_lib import SACHighwayConfiguration
 
 FLAGS = flags.FLAGS
 flags.DEFINE_enum('mode',
@@ -42,20 +42,20 @@ flags.DEFINE_string('base_dir',
                       os.path.dirname(os.path.dirname(__file__))),
                     'Base directory of bark-ml.')
 
-
 def run_configuration(argv):
-  params = ParameterServer(filename=FLAGS.base_dir + "/configurations/sac_highway/config.json")
-  scenario_generation = params["Scenario"]["Generation"]["DeterministicScenarioGeneration"]
+  params = ParameterServer(
+    filename=FLAGS.base_dir + "/configurations/sac_merging/config.json")
+  scenario_generation = params["Scenario"]["Generation"]["DeterministicScenarioGeneration"]  # NOLINT
   map_filename = scenario_generation["MapFilename"]
   scenario_generation["MapFilename"] = FLAGS.base_dir + "/" + map_filename
   params["BaseDir"] = FLAGS.base_dir
   configuration = SACHighwayConfiguration(params)
   
   if FLAGS.mode == 'train':
+    configuration._runner.setup_writer()
     configuration.train()
   elif FLAGS.mode == 'visualize':
-    configuration.visualize(10)
-    # configuration._viewer.export_video("/home/hart/Dokumente/2019/bark-ml/configurations/sac_highway/video/lane_merge")
+    configuration.visualize(40)
   elif FLAGS.mode == 'evaluate':
     configuration.evaluate()
 

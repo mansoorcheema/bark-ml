@@ -15,16 +15,18 @@ from modules.runtime.viewer.video_renderer import VideoRenderer
 
 from src.rl_runtime import RuntimeRL
 from src.observers.nearest_state_observer import ClosestAgentsObserver
+from src.observers.graph_observer import GraphObserver
 from src.wrappers.dynamic_model import DynamicModel
 from src.wrappers.tfa_wrapper import TFAWrapper
 from src.evaluators.goal_reached import GoalReached
 from src.agents.sac_agent import SACAgent
+from src.agents.sac_agent_graph import SACGraphAgent
 from src.runners.sac_runner import SACRunner
 from configurations.base_configuration import BaseConfiguration
 
 # configuration specific evaluator
-from configurations.sac_highway.custom_evaluator import CustomEvaluator
-from configurations.sac_highway.custom_observer import CustomObserver
+from configurations.sac_merging.custom_evaluator import CustomEvaluator
+from configurations.sac_merging.custom_observer import CustomObserver
 
 
 class SACHighwayConfiguration(BaseConfiguration):
@@ -40,13 +42,15 @@ class SACHighwayConfiguration(BaseConfiguration):
     """Builds a configuration using an SAC agent
     """
     self._scenario_generator = \
-      DeterministicScenarioGeneration(num_scenarios=12,
+      DeterministicScenarioGeneration(num_scenarios=20,
                                       random_seed=0,
                                       params=self._params)
-    self._observer = CustomObserver(params=self._params)
+    # self._observer = GraphObserver(params=self._params)
+    self._observer = ClosestAgentsObserver(params=self._params)
     self._behavior_model = DynamicModel(params=self._params)
     self._evaluator = CustomEvaluator(params=self._params)
     viewer = MPViewer(params=self._params,
+                      # use_world_bounds=True)
                       x_range=[-30, 30],
                       y_range=[-30, 30],
                       follow_agent_id=100)
@@ -61,6 +65,7 @@ class SACHighwayConfiguration(BaseConfiguration):
     # tfa_env = tf_py_environment.TFPyEnvironment(
     #   parallel_py_environment.ParallelPyEnvironment(
     #     [lambda: TFAWrapper(self._runtime)] * self._params["ML"]["Agent"]["num_parallel_environments"]))
+    # self._agent = SACGraphAgent(tfa_env, params=self._params)
     self._agent = SACAgent(tfa_env, params=self._params)
     self._runner = SACRunner(tfa_env,
                              self._agent,

@@ -13,9 +13,12 @@ from tf_agents.utils.common import Checkpointer
 from tf_agents.trajectories import time_step as ts
 
 from src.agents.tfa_agent import TFAAgent
+from source.gnn_wrapper import GNNWrapper
+from source.tfa_value_net import GNNValueNetwork
+from source.tfa_actor_net import GNNActorNetwork
 
 
-class PPOAgent(TFAAgent):
+class PPOAgentGNN(TFAAgent):
   """PPO-Agent
      This agent is based on the tf-agents library.
   """
@@ -46,12 +49,22 @@ class PPOAgent(TFAAgent):
         agent -- tf-agent
     """
 
-    actor_net = actor_distribution_network.ActorDistributionNetwork(
-        env.observation_spec(),
-        env.action_spec(),
-        fc_layer_params=tuple(
-          self._params["ML"]["Agent"]["actor_fc_layer_params"]))
-    value_net = value_network.ValueNetwork(
+    # actor_net = actor_distribution_network.ActorDistributionNetwork(
+    #     env.observation_spec(),
+    #     env.action_spec(),
+    #     fc_layer_params=tuple(
+    #       self._params["ML"]["Agent"]["actor_fc_layer_params"]))
+    # value_net = value_network.ValueNetwork(
+    #   env.observation_spec(),
+    #   fc_layer_params=tuple(
+    #     self._params["ML"]["Agent"]["critic_fc_layer_params"]))
+    actor_net = GNNActorNetwork(
+      env.observation_spec(),
+      env.action_spec(),
+      fc_layer_params=tuple(
+        self._params["ML"]["Agent"]["actor_fc_layer_params"]))
+
+    value_net = GNNValueNetwork(
       env.observation_spec(),
       fc_layer_params=tuple(
         self._params["ML"]["Agent"]["critic_fc_layer_params"]))

@@ -36,6 +36,7 @@ class StateEvaluator(ABC):
     #                     evaluation, number= {}" \
     #                     .format(len(agents_to_evaluate)))
     # TODO(@hart); make generic for multi agent planning
+    self._controlled_agents = agents_to_evaluate
     self._eval_agent = agents_to_evaluate[0]
     world.ClearEvaluators()
     self._add_evaluators()

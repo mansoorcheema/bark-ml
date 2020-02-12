@@ -34,7 +34,7 @@ class SACRunner(TFARunner):
                        agent=agent,
                        params=params,
                        unwrapped_runtime=unwrapped_runtime)
-
+    
   def train(self):
     """Wrapper that sets the summary writer.
        This enables a seamingless integration with TensorBoard.
@@ -71,8 +71,8 @@ class SACRunner(TFARunner):
             action_step.action.numpy())
           rewards.append(reward)
           steps.append(1)
-    mean_reward = np.sum(np.array(rewards))/len(rewards)
-    mean_steps = np.sum(np.array(steps))/len(steps)
+    mean_reward = np.sum(np.array(rewards))/self._params["ML"]["Runner"]["evaluation_steps"]
+    mean_steps = np.sum(np.array(steps))/self._params["ML"]["Runner"]["evaluation_steps"]
     tf.summary.scalar("mean_reward",
                       mean_reward,
                       step=global_iteration)
@@ -80,7 +80,7 @@ class SACRunner(TFARunner):
                       mean_steps,
                       step=global_iteration)
     logger.info(
-      "The agent achieved on average {} reward and {} steps in \
+      "The agent achieved average {} reward and {} steps in \
       {} episodes." \
       .format(str(mean_reward),
               str(mean_steps),
@@ -93,8 +93,10 @@ class SACRunner(TFARunner):
     for _ in range(0, self._params["ML"]["Runner"]["number_of_collections"]):
       global_iteration = self._agent._agent._train_step_counter.numpy()
       self._collection_driver.run()
+
       experience, _ = next(iterator)
       self._agent._agent.train(experience)
+
       if global_iteration % self._params["ML"]["Runner"]["evaluate_every_n_steps"] == 0:
         self.evaluate()
         self._agent.save()
@@ -102,9 +104,12 @@ class SACRunner(TFARunner):
   def visualize(self, num_episodes=1):
     # Ticket (https://github.com/tensorflow/agents/issues/59) recommends
     # to do the rendering in the original environment
-    for _ in range(0, num_episodes):
+    for i in range(0, num_episodes):
       state = self._unwrapped_runtime.reset()
       is_terminal = False
+      print("================ EPISODE {} ================".format(
+        str(i)
+      ))
       while not is_terminal:
         action_step = self._agent._eval_policy.action(
           ts.transition(state, reward=0.0, discount=1.0))

@@ -8,36 +8,27 @@ from bark.world import World, ObservedWorld
 # include all configurations
 from configurations.sac_highway.configuration import SACHighwayConfiguration
 
-class BARKMLBehaviorModel(DynamicBehaviorModel):
+class BARKMLBehaviorModel(BehaviorModel):
   """This class makes a trained agent available as BehaviorModel
-     in BARK. There will be no evaluation from the side of the 
-     agent. Thus, a BARKAgent will only use the observer and agent
-     from the configuration.
+     in BARK.
   """
   def __init__(self,
-               configuration=None,
-               dynamic_model = None,
-               agents_to_observe=None):
-    DynamicBehaviorModel.__init__(self, dynamic_model, configuration._params)
+               configuration=None):
+    BehaviorModel.__init__(self, configuration._params)
     self._configuration = configuration
-    self._dynamic_model = dynamic_model
-    self._agents_to_observe = agents_to_observe
+    self._dynamic_behavior_model = DynamicBehaviorModel(
+      self._configuration._behavior_model._dynamic_model,
+      configuration._params)
 
-  def plan(self, delta_time, world):
-    # world is a observed world here
+  def Plan(self, delta_time, world):
     observed_state = self._configuration._observer.observe(
       world=world,
-      agents_to_observe=self._agents_to_observe)
+      agents_to_observe=world.ego_agent.id)
     action = self._configuration._agent.act(observed_state)
+    self._dynamic_behavior_model.SetLastAction(action)
+    trajectory = self._dynamic_behavior_model.Plan(delta_time, world)
+    super(BARKMLBehaviorModel, self).SetLastTrajectory(trajectory)
+    return trajectory
 
-    # need to pass the action
-    super(BARKMLBehaviorModel, self).set_last_action(np.array([1., 2.]))
-
-    observed_world = world
-    if not isinstance(observed_world, ObservedWorld):
-      observed_world = world.observe(self._agents_to_observe)[0]
-
-    return super(BARKMLBehaviorModel, self).plan(delta_time, observed_world)
-
-  def clone(self):
+  def Clone(self):
     return self
