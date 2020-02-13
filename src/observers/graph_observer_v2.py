@@ -13,8 +13,8 @@ from src.observers.observer import StateObserver
 
 class GraphObserverV2(StateObserver):
   def __init__(self,
-               max_num_vehicles=3,
-               num_nearest_vehicles=2,
+               max_num_vehicles=5,
+               num_nearest_vehicles=3,
                params=ParameterServer()):
     StateObserver.__init__(self, params)
     self._state_definition = [int(StateDefinition.X_POSITION),
