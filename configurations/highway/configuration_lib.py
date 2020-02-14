@@ -49,22 +49,20 @@ class HighwayConfiguration(BaseConfiguration):
       DeterministicScenarioGeneration(num_scenarios=250,
                                       random_seed=0,
                                       params=self._params)
-    # self._observer = ClosestAgentsObserver(params=self._params)
-    if self._params["type"] == "graph":
-      self._observer = GraphObserverV2(params=self._params,
-                                       max_num_vehicles=10)
-    else:
-      self._observer = ClosestAgentsObserver(params=self._params)
-
     self._behavior_model = DynamicModel(params=self._params)
     self._evaluator = CustomEvaluator(params=self._params)
-    viewer = MPViewer(params=self._params,
-                      # use_world_bounds=True)
-                      x_range=[-40, 40],
-                      y_range=[-40, 40],
-                      follow_agent_id=100)
-    # self._viewer = viewer
-    self._viewer = VideoRenderer(renderer=viewer, world_step_time=0.2)
+    self._viewer  = MPViewer(params=self._params,
+                             # use_world_bounds=True)
+                             x_range=[-40, 40],
+                             y_range=[-40, 40],
+                             follow_agent_id=100)
+    # self._viewer = VideoRenderer(renderer=self._viewer, world_step_time=0.2)
+    if self._params["type"] == "graph":
+      self._observer = GraphObserverV2(params=self._params,
+                                       max_num_vehicles=10,
+                                       viewer=self._viewer)
+    else:
+      self._observer = ClosestAgentsObserver(params=self._params)
     self._runtime = RuntimeRL(action_wrapper=self._behavior_model,
                               observer=self._observer,
                               evaluator=self._evaluator,

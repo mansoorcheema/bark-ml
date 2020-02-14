@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 if os.environ.get('DISPLAY') == ':0':
   print('No display found. Using non-interactive Agg backend')
   mpl.use('Agg')
-
+import logging
 from absl import app
 from absl import flags
 import tensorflow as tf
@@ -15,6 +15,8 @@ from modules.runtime.commons.parameters import ParameterServer
 from configurations.base_configuration import BaseConfiguration
 from configurations.highway.configuration_lib import HighwayConfiguration
 from tf_agents.trajectories import time_step as ts
+
+logging.root.setLevel(logging.NOTSET)
 
 FLAGS = flags.FLAGS
 flags.DEFINE_enum('mode',
@@ -47,7 +49,7 @@ def run_configuration(argv):
   elif FLAGS.mode == 'visualize':
     params["ML"]["Agent"]["num_parallel_environments"] = 1
     configuration.visualize(10)
-    # configuration._viewer.export_video("/home/hart/Dokumente/2020/bark-ml/configurations/highway/video/lane_change_2")
+    # configuration._viewer.export_video("/home/hart/Dokumente/2020/bark-ml/configurations/highway/video/lane_change_3")
   elif FLAGS.mode == 'evaluate':
     configuration.evaluate(1000)
     print(configuration._runtime._collision_count/1000)

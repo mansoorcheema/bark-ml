@@ -75,8 +75,10 @@ class PPOAgentGNN(TFAAgent):
       env.action_spec(),
       actor_net=actor_net,
       value_net=value_net,
-      normalize_observations=self._params["ML"]["Agent"]["normalize_observations"],
-      normalize_rewards=self._params["ML"]["Agent"]["normalize_rewards"],
+      normalize_observations=self._params["ML"]["Agent"][
+        "normalize_observations", "", False],
+      normalize_rewards=self._params["ML"]["Agent"][
+        "normalize_rewards", "", False],
       optimizer=tf.compat.v1.train.AdamOptimizer(
           learning_rate=self._params["ML"]["Agent"]["learning_rate"]),
       train_step_counter=self._ckpt.step,

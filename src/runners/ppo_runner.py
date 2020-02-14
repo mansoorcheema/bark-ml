@@ -98,5 +98,6 @@ class PPORunner(TFARunner):
           print("action: ", action_step.action.numpy())
           # TODO(@hart); make generic for multi agent planning
           state, reward, is_terminal, _ = self._unwrapped_runtime.step(action_step.action.numpy())
-          print("reward: ", reward, "is_terminal", is_terminal)
+          print("state: ", state, "reward: ", reward, "is_terminal", is_terminal)
+          # print("reward: ", reward, "is_terminal", is_terminal)
           self._unwrapped_runtime.render()

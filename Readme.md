@@ -34,3 +34,10 @@ bazel run //configurations/sac_highway:configuration -- --mode=train
 There are three modes the configurations can be run with: `train`, `visualize` and `evaluate`. You can use these flags in the above stated bazel command.
 
 Currently, you need to set the absolute path in the `config.json` for the checkpoints and summaries to work. You can visualize the training using tensoboard as follows: `tensorboard --logdir ./configurations/sac_highway/summaries/`.
+
+# 214 --> with correct d
+# 215 --> no d
+# 216 --> wider
+# 217 --> wider + deeper
+# 218 --> wider and deeper and no obs norm
+# 219 --> no normalization

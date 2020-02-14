@@ -2,7 +2,7 @@
 from gym import spaces
 import numpy as np
 from bark.models.dynamic import StateDefinition
-from bark.geometry import Point2d, SignedDistance
+from bark.geometry import Line2d,Point2d, SignedDistance
 from modules.runtime.commons.parameters import ParameterServer
 import math
 import operator
@@ -15,7 +15,8 @@ class GraphObserverV2(StateObserver):
   def __init__(self,
                max_num_vehicles=5,
                num_nearest_vehicles=3,
-               params=ParameterServer()):
+               params=ParameterServer(),
+               viewer=None):
     StateObserver.__init__(self, params)
     self._state_definition = [int(StateDefinition.X_POSITION),
                               int(StateDefinition.Y_POSITION),
@@ -27,6 +28,7 @@ class GraphObserverV2(StateObserver):
     self._max_num_vehicles = max_num_vehicles
     self._observation_len = self._max_num_vehicles*self._len_state
     self._initial_lane_corr = None
+    self._viewer = viewer
 
 
   def OrderedAgentIds(self, world, agents_to_observe):
@@ -64,6 +66,9 @@ class GraphObserverV2(StateObserver):
         center_line,
         Point2d(reduced_state[0], reduced_state[1]),
         reduced_state[2])
+    # HACK HACK HACK
+    if agent_id == 103:
+      d_goal = 0.
     # print("distance to goal:", d_goal)
     # print("agent_id", vx, vy, d_goal)
     n_vx = self._norm(vx, [-8., 8.])
@@ -78,6 +83,19 @@ class GraphObserverV2(StateObserver):
     reduced_to_state = self._select_state_by_index(to_agent.state)
     dx = reduced_to_state[0] - reduced_from_state[0]
     dy = reduced_to_state[1] - reduced_from_state[1]
+    # plot connections
+    if self._viewer is not None:
+      pt_from = Point2d(reduced_from_state[0], reduced_from_state[1])
+      pt_to = Point2d(reduced_to_state[0], reduced_to_state[1])
+      line = Line2d()
+      line.AddPoint(pt_from)
+      line.AddPoint(pt_to)
+      color = "gray"
+      alpha = 0.1
+      if to_id == 100:
+        color = "red"
+        alpha = 1.0
+      self._viewer.drawLine2d(line, color=color, alpha=alpha)
     # print("from_id: ", from_id, ", to_id:", to_id, ", dx: ", dx, ", dy: ", dy)
     n_dx = self._norm(dx, [-4., 4.])
     n_dy = self._norm(dy, [-100., 100.])
