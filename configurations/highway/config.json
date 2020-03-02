@@ -224,7 +224,7 @@
         "Agent": {
           "actor_fc_layer_params": [512, 256, 256],
           "critic_fc_layer_params": [512, 256, 256],
-          "learning_rate": 3e-4,
+          "learning_rate": 1e-3,
           "num_epochs": 1,
           "agent_name": "ppo_agent",
           "debug_summaries": false,
@@ -235,8 +235,8 @@
           "buffer_num_steps": 1,
           "buffer_prefetch": 1,
           "batch_size": 256,
-          "normalize_observations": true,
-          "normalize_rewards": false,
+          "normalize_observations": false,
+          "normalize_rewards": true,
           "checkpoint_path": "configurations/highway/checkpoints/"
         },
         "SACAgent": {
@@ -269,7 +269,7 @@
         "Observer": {
           "velocity_range": [0, 30],
           "theta_range": [-3.14, 3.14],
-          "normalization_enabled": true,
+          "normalization_enabled": false,
           "max_num_agents": 2,
           "n_nearest_agents": 5,
           "max_vel": 30.0,
@@ -278,10 +278,10 @@
         },
         "Runner": {
           "number_of_collections": 5000000,
-          "initial_collection_steps": 100,
+          "initial_collection_steps": 10,
           "collection_episodes_per_cycle": 1,
-          "evaluate_every_n_steps": 2500,
-          "evaluation_steps": 25,
+          "evaluate_every_n_steps": 200,
+          "evaluation_steps": 10,
           "summary_path": "configurations/highway/summaries/"
         },
         "DynamicModel": {
