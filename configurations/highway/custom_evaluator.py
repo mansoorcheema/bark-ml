@@ -20,11 +20,9 @@ class CustomEvaluator(GoalReached):
                          eval_agent)
 
   def _add_evaluators(self):
-    self._evaluators["goal_reached"] = EvaluatorGoalReached(
-      self._controlled_agents[0])
+    self._evaluators["goal_reached"] = EvaluatorGoalReached()
     self._evaluators["drivable_area"] = EvaluatorDrivableArea()
-    self._evaluators["collision"] = \
-      EvaluatorCollisionEgoAgent(self._controlled_agents[0])
+    self._evaluators["collision"] = EvaluatorCollisionEgoAgent()
     self._evaluators["step_count"] = EvaluatorStepCount()
 
   def distance_to_goal(self, world):
@@ -64,7 +62,7 @@ class CustomEvaluator(GoalReached):
 
     return reward
 
-  def _evaluate(self, world, eval_results, action):
+  def _evaluate(self, world, eval_results, action, observed_state):
     """Returns information about the current world state
     """
     done = False

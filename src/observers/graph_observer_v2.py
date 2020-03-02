@@ -6,7 +6,7 @@ from bark.geometry import Line2d,Point2d, SignedDistance
 from modules.runtime.commons.parameters import ParameterServer
 import math
 import operator
-from src.commons.spaces import BoundedContinuous, Discrete
+from src.commons.py_spaces import BoundedContinuous, Discrete
 
 from src.observers.observer import StateObserver
 
@@ -101,29 +101,29 @@ class GraphObserverV2(StateObserver):
     n_dy = self._norm(dy, [-100., 100.])
     return np.array([n_dx, n_dy], dtype=np.float32)
 
-  def observe(self, world, agents_to_observe):
+  def observe(self, observed_world):
     """see base class
     """
     gen_graph = -1.*np.ones(
       shape=(self._max_num_vehicles*self._num_nearest_vehicles + 1, 7),
       dtype=np.float32)
     # 1. make sure ego agent is in front
-    id_list = self.OrderedAgentIds(world, agents_to_observe)
-    assert(id_list[0] == agents_to_observe[0])
+    id_list = self.OrderedAgentIds(observed_world, [observed_world.ego_agent.id])
+    assert(id_list[0] == observed_world.ego_agent.id)
     node_row_idx = edge_row_idx= 0
     # 2. loop through all agent
     for agent_id in id_list:
       # 3. add nodes
       gen_graph[node_row_idx, 2:2+self._h0_len] = \
-        self.CalculateNodeValue(world, agent_id)
-      nearest_ids = self.FindNearestAgentIds(world, agent_id)
+        self.CalculateNodeValue(observed_world, agent_id)
+      nearest_ids = self.FindNearestAgentIds(observed_world, agent_id)
       # print(node_value, nearest_ids)
       for from_id in nearest_ids:
         gen_graph[edge_row_idx, :2] = \
           np.array([id_list.index(from_id),
                     id_list.index(agent_id)], dtype=np.float32)
         gen_graph[edge_row_idx, self._h0_len+2:] = \
-          self.CalculateEdgeValue(world, from_id, agent_id)
+          self.CalculateEdgeValue(observed_world, from_id, agent_id)
         edge_row_idx += 1
       node_row_idx += 1
     return gen_graph
@@ -133,8 +133,7 @@ class GraphObserverV2(StateObserver):
   def _norm(self, state, range):
     return (state - range[0])/(range[1]-range[0])
 
-  def reset(self, world, agents_to_observe):
-    super(GraphObserverV2, self).reset(world, agents_to_observe)
+  def reset(self, world):
     return world
 
   @property

@@ -5,7 +5,7 @@ from bark.models.dynamic import StateDefinition
 from modules.runtime.commons.parameters import ParameterServer
 import math
 import operator
-from src.commons.spaces import BoundedContinuous, Discrete
+from src.commons.py_spaces import BoundedContinuous, Discrete
 
 from src.observers.observer import StateObserver
 

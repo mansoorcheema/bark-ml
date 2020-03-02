@@ -17,9 +17,8 @@ from configurations.highway.configuration_lib import HighwayConfiguration
 from tf_agents.trajectories import time_step as ts
 
 # configuration specific evaluator
-from configurations.sac_merging.custom_evaluator import CustomEvaluator
-from configurations.sac_merging.custom_observer import CustomObserver
-from configurations.sac_merging.configuration_lib import SACHighwayConfiguration
+from configurations.highway.custom_evaluator import CustomEvaluator
+from configurations.highway.configuration_lib import HighwayConfiguration
 
 FLAGS = flags.FLAGS
 flags.DEFINE_enum('mode',
