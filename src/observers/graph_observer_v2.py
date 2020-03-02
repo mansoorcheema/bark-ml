@@ -60,12 +60,13 @@ class GraphObserverV2(StateObserver):
     vy = np.sin(reduced_state[2])*reduced_state[3]
     d_goal = 0.
     if agent.road_corridor:
-      goal_lane_corr = agent.road_corridor.lane_corridors[0]
-      center_line = goal_lane_corr.center_line
+      goal_def = agent.goal_definition
+      goal_center_line = goal_def.center_line
+      ego_agent_state = agent.state
       d_goal = SignedDistance(
-        center_line,
-        Point2d(reduced_state[0], reduced_state[1]),
-        reduced_state[2])
+        goal_center_line,
+        Point2d(ego_agent_state[1], ego_agent_state[2]),
+        reduced_state[3])
     n_vx = self._norm(vx, [-8., 8.])
     n_vy = self._norm(vy, [0., 20.])
     n_d_goal = self._norm(d_goal, [-4., 4.])
@@ -99,14 +100,19 @@ class GraphObserverV2(StateObserver):
   def observe(self, observed_world):
     """see base class
     """
+    if self._viewer is not None:
+      self._viewer.clear()
     gen_graph = -1.*np.ones(
       shape=(int(self._num_graph_rows), 7),
       dtype=np.float32)
     # 1. make sure ego agent is in front
     id_list = self.OrderedAgentIds(observed_world, [observed_world.ego_agent.id])
     nearest_agent_ids = self.FindNearestAgentIds(observed_world, observed_world.ego_agent.id)
-    if observed_world.ego_agent.id not in nearest_agent_ids:
-      nearest_agent_ids.append(observed_world.ego_agent.id)
+    # we need to append the ego agent first!
+    if observed_world.ego_agent.id in nearest_agent_ids:
+      nearest_agent_ids.remove(observed_world.ego_agent.id)
+    nearest_agent_ids.insert(0, observed_world.ego_agent.id)
+    assert(nearest_agent_ids[0] == observed_world.ego_agent.id)
     assert(id_list[0] == observed_world.ego_agent.id)
     node_row_idx = edge_row_idx= 0
     # 2. loop through all agent
@@ -117,6 +123,8 @@ class GraphObserverV2(StateObserver):
       # we only want to add edges for the ego and nearby agents
       if agent_id in nearest_agent_ids:
         nearest_ids = self.FindNearestAgentIds(observed_world, agent_id)
+        if agent_id in nearest_ids:
+          nearest_ids.remove(agent_id)
         for from_id in nearest_ids:
           # print(edge_row_idx, from_id, agent_id)
           gen_graph[edge_row_idx, :2] = \

@@ -26,15 +26,14 @@ class CustomEvaluator(GoalReached):
     self._evaluators["step_count"] = EvaluatorStepCount()
 
   def distance_to_goal(self, observed_world):
-    d = 0.
-    for idx in [observed_world.ego_agent.id]:
-      agent = observed_world.agents[idx]
-      state = agent.state
-      # TODO(@hart): fix.. offset 0.75 so we drive to the middle of the polygon
-      center_line = agent.road_corridor.lane_corridors[0].center_line
-      d += Distance(center_line, Point2d(state[1], state[2]))
-    return d
-  
+    ego_agent = observed_world.ego_agent
+    goal_def = ego_agent.goal_definition
+    goal_center_line = goal_def.center_line
+    ego_agent_state = ego_agent.state
+    lateral_offset = Distance(goal_center_line,
+                              Point2d(ego_agent_state[1], ego_agent_state[2]))
+    return lateral_offset
+
   def calculate_reward(self, world, eval_results, action):
     success = eval_results["goal_reached"]
     collision = eval_results["collision"]
