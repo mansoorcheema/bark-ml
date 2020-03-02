@@ -14,7 +14,7 @@ from src.observers.observer import StateObserver
 class GraphObserverV2(StateObserver):
   def __init__(self,
                max_num_vehicles=3,
-               num_nearest_vehicles=3,
+               num_nearest_vehicles=4,
                params=ParameterServer(),
                viewer=None):
     StateObserver.__init__(self, params)
@@ -110,7 +110,7 @@ class GraphObserverV2(StateObserver):
     # 1. make sure ego agent is in front
     # id_list = self.OrderedAgentIds(observed_world, [observed_world.ego_agent.id])
     id_list = self.FindNearestAgentIds(
-      observed_world, observed_world.ego_agent.id, 5)
+      observed_world, observed_world.ego_agent.id, self._max_num_vehicles)
     # we need to append the ego agent first!
     if observed_world.ego_agent.id in id_list:
       id_list.remove(observed_world.ego_agent.id)

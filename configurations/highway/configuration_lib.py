@@ -65,7 +65,7 @@ class HighwayConfiguration(BaseConfiguration):
     # self._viewer = VideoRenderer(renderer=self._viewer, world_step_time=0.2)
     if self._params["type"] == "graph":
       self._observer = GraphObserverV2(params=self._params,
-                                       max_num_vehicles=3,
+                                       max_num_vehicles=5,
                                        viewer=self._viewer)
     else:
       self._observer = ClosestAgentsObserver(params=self._params)
