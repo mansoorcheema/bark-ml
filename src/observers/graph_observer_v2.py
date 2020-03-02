@@ -30,7 +30,6 @@ class GraphObserverV2(StateObserver):
     self._initial_lane_corr = None
     self._viewer = viewer
 
-
   def OrderedAgentIds(self, world, agents_to_observe):
     agent_id_list = []
     for oid in agents_to_observe:
@@ -127,8 +126,6 @@ class GraphObserverV2(StateObserver):
         edge_row_idx += 1
       node_row_idx += 1
     return gen_graph
-    
-    # return graph
   
   def _norm(self, state, range):
     return (state - range[0])/(range[1]-range[0])

@@ -73,17 +73,12 @@ class HighwayConfiguration(BaseConfiguration):
                               scenario_generator=self._scenario_generator)
     eval_tf_env = tf_py_environment.TFPyEnvironment(TFAWrapper(self._runtime))
     tfa_env = tf_py_environment.TFPyEnvironment(TFAWrapper(self._runtime))
-    # self._agent = SACAgent(tfa_env, params=self._params)
-    # self._agent = PPOAgent(tfa_env, params=self._params)
+
     if self._params["type"] == "graph":
       self._agent = PPOAgentGNN(tfa_env, params=self._params)
     else:
       self._agent = PPOAgent(tfa_env, params=self._params)
-    
-    if self._params["type"] == "graph":
-      self._agent = PPOAgentGNN(tfa_env, params=self._params)
-    else:
-      self._agent = PPOAgent(tfa_env, params=self._params)
+
     self._runner = PPORunner(tfa_env,
                              eval_tf_env,
                              self._agent,
