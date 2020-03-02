@@ -25,23 +25,15 @@ class CustomEvaluator(GoalReached):
     self._evaluators["collision"] = EvaluatorCollisionEgoAgent()
     self._evaluators["step_count"] = EvaluatorStepCount()
 
-  def distance_to_goal(self, world):
+  def distance_to_goal(self, observed_world):
     d = 0.
-    for idx in [100]:
-      agent = world.agents[idx]
+    for idx in [observed_world.ego_agent.id]:
+      agent = observed_world.agents[idx]
       state = agent.state
       # TODO(@hart): fix.. offset 0.75 so we drive to the middle of the polygon
       center_line = agent.road_corridor.lane_corridors[0].center_line
       d += Distance(center_line, Point2d(state[1], state[2]))
     return d
-
-  def deviation_velocity(self, world):
-    desired_v = 15.
-    delta_v = 0.
-    for idx in [100]:
-      vel = world.agents[idx].state[int(StateDefinition.VEL_POSITION)]
-      delta_v += (desired_v-vel)**2
-    return delta_v
   
   def calculate_reward(self, world, eval_results, action):
     success = eval_results["goal_reached"]
@@ -57,12 +49,11 @@ class CustomEvaluator(GoalReached):
     inpt_reward = np.sqrt(np.sum((1/0.15*delta)**2 + (accs)**2))
     reward = collision * self._collision_penalty + \
       success * self._goal_reward - 0.01*inpt_reward - \
-      0.001*self.deviation_velocity(world) - \
-      0.001*distance_to_goals**2 + drivable_area * self._collision_penalty
+      0.01*distance_to_goals**2 + drivable_area * self._collision_penalty
 
     return reward
 
-  def _evaluate(self, world, eval_results, action, observed_state):
+  def _evaluate(self, observed_world, eval_results, action, observed_state):
     """Returns information about the current world state
     """
     done = False
@@ -71,7 +62,7 @@ class CustomEvaluator(GoalReached):
     drivable_area = eval_results["drivable_area"]
     step_count = eval_results["step_count"]
 
-    reward = self.calculate_reward(world, eval_results, action)    
+    reward = self.calculate_reward(observed_world, eval_results, action)    
     if step_count > self._max_steps or collision or drivable_area or success:
       done = True
     return reward, done, eval_results

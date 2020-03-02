@@ -1,4 +1,4 @@
-
+import math
 from gym import spaces
 import numpy as np
 from bark.models.dynamic import StateDefinition
@@ -13,7 +13,7 @@ from src.observers.observer import StateObserver
 
 class GraphObserverV2(StateObserver):
   def __init__(self,
-               max_num_vehicles=5,
+               max_num_vehicles=3,
                num_nearest_vehicles=3,
                params=ParameterServer(),
                viewer=None):
@@ -26,6 +26,7 @@ class GraphObserverV2(StateObserver):
     self._e0_len = 2
     self._num_nearest_vehicles = num_nearest_vehicles
     self._max_num_vehicles = max_num_vehicles
+    self._num_graph_rows = math.pow(num_nearest_vehicles, max_num_vehicles) + 1
     self._observation_len = self._max_num_vehicles*self._len_state
     self._initial_lane_corr = None
     self._viewer = viewer
@@ -52,8 +53,8 @@ class GraphObserverV2(StateObserver):
         agent_id_list.append(nid)
     return agent_id_list
 
-  def CalculateNodeValue(self, world, agent_id):
-    agent = world.GetAgent(agent_id)
+  def CalculateNodeValue(self, observed_world, agent_id):
+    agent = observed_world.GetAgent(agent_id)
     reduced_state = self._select_state_by_index(agent.state)
     vx = np.cos(reduced_state[2])*reduced_state[3]
     vy = np.sin(reduced_state[2])*reduced_state[3]
@@ -75,9 +76,9 @@ class GraphObserverV2(StateObserver):
     n_d_goal = self._norm(d_goal, [-4., 4.])
     return np.array([n_vx, n_vy, n_d_goal], dtype=np.float32)
 
-  def CalculateEdgeValue(self, world, from_id, to_id):
-    from_agent = world.agents[from_id]
-    to_agent = world.agents[to_id]
+  def CalculateEdgeValue(self, observed_world, from_id, to_id):
+    from_agent = observed_world.agents[from_id]
+    to_agent = observed_world.agents[to_id]
     reduced_from_state = self._select_state_by_index(from_agent.state)
     reduced_to_state = self._select_state_by_index(to_agent.state)
     dx = reduced_to_state[0] - reduced_from_state[0]
@@ -91,7 +92,7 @@ class GraphObserverV2(StateObserver):
       line.AddPoint(pt_to)
       color = "gray"
       alpha = 0.1
-      if to_id == 100:
+      if to_id == observed_world.ego_agent.id:
         color = "red"
         alpha = 1.0
       self._viewer.drawLine2d(line, color=color, alpha=alpha)
@@ -104,10 +105,13 @@ class GraphObserverV2(StateObserver):
     """see base class
     """
     gen_graph = -1.*np.ones(
-      shape=(self._max_num_vehicles*self._num_nearest_vehicles + 1, 7),
+      shape=(int(self._num_graph_rows), 7),
       dtype=np.float32)
     # 1. make sure ego agent is in front
     id_list = self.OrderedAgentIds(observed_world, [observed_world.ego_agent.id])
+    nearest_agent_ids = self.FindNearestAgentIds(observed_world, observed_world.ego_agent.id)
+    if observed_world.ego_agent.id not in nearest_agent_ids:
+      nearest_agent_ids.append(observed_world.ego_agent.id)
     assert(id_list[0] == observed_world.ego_agent.id)
     node_row_idx = edge_row_idx= 0
     # 2. loop through all agent
@@ -115,15 +119,17 @@ class GraphObserverV2(StateObserver):
       # 3. add nodes
       gen_graph[node_row_idx, 2:2+self._h0_len] = \
         self.CalculateNodeValue(observed_world, agent_id)
-      nearest_ids = self.FindNearestAgentIds(observed_world, agent_id)
-      # print(node_value, nearest_ids)
-      for from_id in nearest_ids:
-        gen_graph[edge_row_idx, :2] = \
-          np.array([id_list.index(from_id),
-                    id_list.index(agent_id)], dtype=np.float32)
-        gen_graph[edge_row_idx, self._h0_len+2:] = \
-          self.CalculateEdgeValue(observed_world, from_id, agent_id)
-        edge_row_idx += 1
+      # we only want to add edges for the ego and nearby agents
+      if agent_id in nearest_agent_ids:
+        nearest_ids = self.FindNearestAgentIds(observed_world, agent_id)
+        for from_id in nearest_ids:
+          print(edge_row_idx, from_id, agent_id)
+          gen_graph[edge_row_idx, :2] = \
+            np.array([id_list.index(from_id),
+                      id_list.index(agent_id)], dtype=np.float32)
+          gen_graph[edge_row_idx, self._h0_len+2:] = \
+            self.CalculateEdgeValue(observed_world, from_id, agent_id)
+          edge_row_idx += 1
       node_row_idx += 1
     return gen_graph
   
@@ -138,7 +144,7 @@ class GraphObserverV2(StateObserver):
     return spaces.Box(
       low=0.,
       high=1.,
-      shape=(self._max_num_vehicles*self._num_nearest_vehicles + 1, 7))
+      shape=(int(self._num_graph_rows), 7))
 
   @property
   def _len_state(self):

@@ -15,10 +15,10 @@ from src.agents.tfa_agent import TFAAgent
 
 from source.gnn_wrapper import GNNWrapper
 from source.tfa_actor_net import GNNActorNetwork
-from source.tfa_critic_net import CGNNCriticNetwork
+from source.tfa_critic_net import GNNCriticNetwork
 
 
-class SACGraphAgent(TFAAgent):
+class SACAgentGNN(TFAAgent):
   """SAC-Agent
      This agent is based on the tf-agents library.
   """
@@ -46,56 +46,19 @@ class SACGraphAgent(TFAAgent):
     Returns:
         agent -- tf-agent
     """
-    def _normal_projection_net(action_spec, init_means_output_factor=0.1):
-      return normal_projection_network.NormalProjectionNetwork(
-        action_spec,
-        mean_transform=None,
-        state_dependent_std=True,
-        init_means_output_factor=init_means_output_factor,
-        std_transform=sac_agent.std_clip_transform,
-        scale_distribution=True)
 
-    actor_cgnn = GNNWrapper(
-      node_layers_def=[
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 80, "activation": "sigmoid", "dropout_rate": 0.0, "type": "DenseLayer"},
-      ],
-      edge_layers_def=[
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 80, "activation": "sigmoid", "dropout_rate": 0.0, "type": "DenseLayer"},
-      ],
-      h0_dim=3,
-      e0_dim=2)
-
-    critic_cgnn = GNNWrapper(
-      node_layers_def=[
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 80, "activation": "sigmoid", "dropout_rate": 0.0, "type": "DenseLayer"},
-      ],
-      edge_layers_def=[
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 80, "activation": "sigmoid", "dropout_rate": 0.0, "type": "DenseLayer"},
-      ],
-      h0_dim=3,
-      e0_dim=2)
-
-    actor_net = CGNNActorNetwork(
+    actor_net = GNNActorNetwork(
       env.observation_spec(),
       env.action_spec(),
       fc_layer_params=tuple(
-        self._params["ML"]["Agent"]["actor_fc_layer_params"]),
-      cgnn=actor_cgnn)
+        self._params["ML"]["Agent"]["actor_fc_layer_params"]))
 
-    critic_net = CGNNCriticNetwork(
+    critic_net = GNNCriticNetwork(
       (env.observation_spec(), env.action_spec()),
+      observation_fc_layer_params=None,
       action_fc_layer_params=None,
       joint_fc_layer_params=tuple(
-        self._params["ML"]["Agent"]["critic_joint_fc_layer_params"]),
-      cgnn=critic_cgnn)
+        self._params["ML"]["Agent"]["critic_joint_fc_layer_params", "", [256]]))
     
     # agent
     tf_agent = sac_agent.SacAgent(

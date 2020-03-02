@@ -31,12 +31,15 @@ class RuntimeRL(Runtime):
     """Resets the runtime and its objects
     """
     super().reset(scenario=scenario)
+    self._world.UpdateAgentRTree()
     self._world = self._observer.reset(self._world)
     self._world = self._evaluator.reset(self._world)
     self._world = self._action_wrapper.reset(self._world,
                                              self._scenario._eval_agent_ids)
     observed_world = self._world.Observe(
       self._scenario._eval_agent_ids)[0]
+    if self._viewer is not None:
+      self._viewer.clear()
     return self._observer.observe(observed_world)
 
   def step(self, action):
