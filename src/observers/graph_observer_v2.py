@@ -66,11 +66,6 @@ class GraphObserverV2(StateObserver):
         center_line,
         Point2d(reduced_state[0], reduced_state[1]),
         reduced_state[2])
-    # HACK HACK HACK
-    if agent_id == 103:
-      d_goal = 0.
-    # print("distance to goal:", d_goal)
-    # print("agent_id", vx, vy, d_goal)
     n_vx = self._norm(vx, [-8., 8.])
     n_vy = self._norm(vy, [0., 20.])
     n_d_goal = self._norm(d_goal, [-4., 4.])
@@ -91,7 +86,7 @@ class GraphObserverV2(StateObserver):
       line.AddPoint(pt_from)
       line.AddPoint(pt_to)
       color = "gray"
-      alpha = 0.1
+      alpha = 0.25
       if to_id == observed_world.ego_agent.id:
         color = "red"
         alpha = 1.0
@@ -123,7 +118,7 @@ class GraphObserverV2(StateObserver):
       if agent_id in nearest_agent_ids:
         nearest_ids = self.FindNearestAgentIds(observed_world, agent_id)
         for from_id in nearest_ids:
-          print(edge_row_idx, from_id, agent_id)
+          # print(edge_row_idx, from_id, agent_id)
           gen_graph[edge_row_idx, :2] = \
             np.array([id_list.index(from_id),
                       id_list.index(agent_id)], dtype=np.float32)
