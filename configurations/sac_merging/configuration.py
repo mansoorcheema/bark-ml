@@ -9,28 +9,12 @@ from absl import flags
 import tensorflow as tf
 from tf_agents.environments import tf_py_environment
 
-from modules.runtime.scenario.scenario_generation.uniform_vehicle_distribution \
-  import UniformVehicleDistribution
-from modules.runtime.scenario.scenario_generation.deterministic \
-  import DeterministicScenarioGeneration
 from modules.runtime.commons.parameters import ParameterServer
-from modules.runtime.viewer.matplotlib_viewer import MPViewer
-from modules.runtime.viewer.video_renderer import VideoRenderer
-
-
-from src.rl_runtime import RuntimeRL
-from src.observers.nearest_state_observer import ClosestAgentsObserver
-from src.wrappers.dynamic_model import DynamicModel
-from src.wrappers.tfa_wrapper import TFAWrapper
-from src.evaluators.goal_reached import GoalReached
-from src.agents.sac_agent import SACAgent
-from src.runners.sac_runner import SACRunner
 from configurations.base_configuration import BaseConfiguration
 
 # configuration specific evaluator
-from configurations.sac_merging.custom_evaluator import CustomEvaluator
-from configurations.sac_merging.custom_observer import CustomObserver
-from configurations.sac_merging.configuration_lib import SACHighwayConfiguration
+from configurations.highway.custom_evaluator import CustomEvaluator
+from configurations.highway.configuration_lib import HighwayConfiguration
 
 FLAGS = flags.FLAGS
 flags.DEFINE_enum('mode',
@@ -49,7 +33,7 @@ def run_configuration(argv):
   map_filename = scenario_generation["MapFilename"]
   scenario_generation["MapFilename"] = FLAGS.base_dir + "/" + map_filename
   params["BaseDir"] = FLAGS.base_dir
-  configuration = SACHighwayConfiguration(params)
+  configuration = HighwayConfiguration(params)
   
   if FLAGS.mode == 'train':
     configuration._runner.setup_writer()

@@ -5,6 +5,9 @@
 
 
 import unittest
+import pickle
+import os
+import copy
 import tensorflow as tf
 import numpy as np
 tf.compat.v1.enable_v2_behavior()
@@ -26,62 +29,15 @@ from src.wrappers.tfa_wrapper import TFAWrapper
 from src.evaluators.goal_reached import GoalReached
 from src.agents.sac_agent import SACAgent
 
-from configurations.sac_highway.configuration_lib import SACHighwayConfiguration
+from configurations.highway.configuration_lib import HighwayConfiguration
 from configurations.bark_agent import BARKMLBehaviorModel
 
 class PyBarkAgentTests(unittest.TestCase):
-  def test_bark_agent(self):
-    params = ParameterServer(
-      filename="configurations/sac_highway/config.json")
-    configuration = SACHighwayConfiguration(params)
-    scenario_generator = configuration._scenario_generator
-    scenario, idx = scenario_generator.get_next_scenario()
-    world = scenario.get_world_state()
-    dynamic_model = SingleTrackModel(params)
-    bark_agent = BARKMLBehaviorModel(
-      configuration)
-
-    # test whether an action can be set
-    bark_agent.SetLastAction(np.array([1., 1.]))
-    np.testing.assert_array_equal(
-      bark_agent.GetLastAction(),
-      np.array([1., 1.]))
-    bark_agent.SetLastAction(np.array([2., 1.]))
-
-    # check whether cloning works
-    new_agent = bark_agent.Clone()
-    np.testing.assert_array_equal(
-      new_agent.GetLastAction(),
-      np.array([2., 1.]))
-
-    # test plan step
-    observed_world = world.Observe([100])[0]
-    bark_agent.Plan(0.2, observed_world)
-  
-  def test_bark_agent_in_world(self):
-    params = ParameterServer(
-      filename="configurations/sac_highway/config.json")
-    configuration = SACHighwayConfiguration(params)
-    scenario_generator = configuration._scenario_generator
-    scenario, idx = scenario_generator.get_next_scenario()
-    world = scenario.get_world_state()
-
-    # bark agent
-    dynamic_model = world.agents[scenario._eval_agent_ids[0]].dynamic_model
-    bark_agent = BARKMLBehaviorModel(
-      configuration)
-    
-    world.agents[100].behavior_model = bark_agent
-    for _ in range(0, 10):
-      configuration._viewer.drawWorld(world)
-      world.Step(0.2)
-      # print(world.agents[scenario._eval_agent_ids[0]].state)
-
   def test_bark_agent_in_runtime(self):
     # check whether the bark agent really does work
     params = ParameterServer(
-      filename="configurations/sac_highway/config.json")
-    configuration = SACHighwayConfiguration(params)
+      filename="configurations/highway/config.json")
+    configuration = HighwayConfiguration(params)
     scenario_generator = configuration._scenario_generator
     
     viewer = MPViewer(params=params,
@@ -94,15 +50,22 @@ class PyBarkAgentTests(unittest.TestCase):
                   viewer,
                   scenario_generator,
                   render=True)
-
     env.reset()
     dynamic_model = env._world.agents[env._scenario._eval_agent_ids[0]].dynamic_model
     bark_agent = BARKMLBehaviorModel(configuration)
     env._world.agents[env._scenario._eval_agent_ids[0]].behavior_model = bark_agent
 
-    for _ in range(0, 10):
-      env.step()
+    env.step()
 
+    f = open(os.path.join("./ml_behavior_model.pickle"), "wb")
+    pickle.dump(bark_agent, f)
+
+    f = open(os.path.join("./ml_behavior_model.pickle"), "rb")
+    bark_agent = pickle.load(f)
+
+    ba_copy = copy.deepcopy(bark_agent)
+    env._world.agents[env._scenario._eval_agent_ids[0]].behavior_model = ba_copy
+    env.step()
 
 if __name__ == '__main__':
   unittest.main()

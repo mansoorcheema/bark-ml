@@ -16,7 +16,10 @@ from configurations.base_configuration import BaseConfiguration
 from configurations.highway.configuration_lib import HighwayConfiguration
 from tf_agents.trajectories import time_step as ts
 
-logging.root.setLevel(logging.NOTSET)
+# configuration specific evaluator
+from configurations.sac_merging.custom_evaluator import CustomEvaluator
+from configurations.sac_merging.custom_observer import CustomObserver
+from configurations.sac_merging.configuration_lib import SACHighwayConfiguration
 
 FLAGS = flags.FLAGS
 flags.DEFINE_enum('mode',
@@ -41,6 +44,7 @@ def run_configuration(argv):
   scenario_generation["MapFilename"] = FLAGS.base_dir + "/" + map_filename
   params["BaseDir"] = FLAGS.base_dir
   params["type"] = FLAGS.type
+
   configuration = HighwayConfiguration(params)
   
   if FLAGS.mode == 'train':
@@ -63,31 +67,23 @@ def run_configuration(argv):
     scenario, _ = \
       scenario_generator.get_next_scenario()
     world = scenario.get_world_state()
-
     fig, ax1 = plt.subplots()
-
     color = 'tab:red'
     ax1.set_xlabel('distance of lead vehicle (m)')
     ax1.set_ylabel('acceleration $a$', color=color)
     # ax1.plot(t, data1, color=color)
     ax1.tick_params(axis='y', labelcolor=color)
-
     ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
-
     color = 'tab:blue'
     ax2.set_ylabel('steering-rate $\delta$', color=color)  # we already handled the x-label with ax1
     # ax2.plot(t, data2, color=color)
     ax2.tick_params(axis='y', labelcolor=color)
-
-    
     deltas = []
     accs = []
     distances = []
     agent_state = world.agents[104].state
     start_distance = agent_state[2]
-
     viewer.drawWorld(world)
-
     for _ in range(0, 3):
       agent_state = world.agents[104].state
       agent_state[2] += 5.
@@ -113,8 +109,6 @@ def run_configuration(argv):
     plt.show()
     #viewer.show(block=True)
   
-
-
 
 if __name__ == '__main__':
   app.run(run_configuration)

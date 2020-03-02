@@ -8,9 +8,13 @@ from modules.runtime.scenario.scenario_generation.uniform_vehicle_distribution \
   import UniformVehicleDistribution
 from modules.runtime.scenario.scenario_generation.deterministic \
   import DeterministicScenarioGeneration
+from modules.runtime.scenario.scenario_generation.configurable_scenario_generation import \
+  ConfigurableScenarioGeneration
+
 from modules.runtime.commons.parameters import ParameterServer
 from modules.runtime.viewer.matplotlib_viewer import MPViewer
 from modules.runtime.viewer.video_renderer import VideoRenderer
+from modules.runtime.viewer.pygame_viewer import PygameViewer
 
 
 from src.rl_runtime import RuntimeRL
@@ -22,6 +26,7 @@ from src.evaluators.goal_reached import GoalReached
 from src.agents.sac_agent import SACAgent
 from src.agents.sac_agent_graph import SACGraphAgent
 from src.runners.sac_runner import SACRunner
+from src.runners.ppo_runner import PPORunner
 from configurations.base_configuration import BaseConfiguration
 
 # configuration specific evaluator
@@ -29,7 +34,7 @@ from configurations.sac_merging.custom_evaluator import CustomEvaluator
 from configurations.sac_merging.custom_observer import CustomObserver
 
 
-class SACHighwayConfiguration(BaseConfiguration):
+class HighwayConfiguration(BaseConfiguration):
   """Hermetic and reproducible configuration class
   """
   def __init__(self,
@@ -41,6 +46,7 @@ class SACHighwayConfiguration(BaseConfiguration):
   def _build_configuration(self):
     """Builds a configuration using an SAC agent
     """
+    # TODO(@hart): increase scenario number
     self._scenario_generator = \
       DeterministicScenarioGeneration(num_scenarios=20,
                                       random_seed=0,

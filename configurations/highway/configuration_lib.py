@@ -8,10 +8,13 @@ from modules.runtime.scenario.scenario_generation.uniform_vehicle_distribution \
   import UniformVehicleDistribution
 from modules.runtime.scenario.scenario_generation.deterministic \
   import DeterministicScenarioGeneration
+from modules.runtime.scenario.scenario_generation.configurable_scenario_generation import \
+  ConfigurableScenarioGeneration
+
 from modules.runtime.commons.parameters import ParameterServer
 from modules.runtime.viewer.matplotlib_viewer import MPViewer
 from modules.runtime.viewer.video_renderer import VideoRenderer
-
+from modules.runtime.viewer.pygame_viewer import PygameViewer
 
 from src.rl_runtime import RuntimeRL
 from src.observers.nearest_state_observer import ClosestAgentsObserver
@@ -30,8 +33,7 @@ from configurations.base_configuration import BaseConfiguration
 
 # configuration specific evaluator
 from configurations.highway.custom_evaluator import CustomEvaluator
-from configurations.highway.custom_observer import CustomObserver
-
+# from bark_ml.observers import NearestObserver
 
 class HighwayConfiguration(BaseConfiguration):
   """Hermetic and reproducible configuration class
@@ -71,12 +73,13 @@ class HighwayConfiguration(BaseConfiguration):
                               scenario_generator=self._scenario_generator)
     eval_tf_env = tf_py_environment.TFPyEnvironment(TFAWrapper(self._runtime))
     tfa_env = tf_py_environment.TFPyEnvironment(TFAWrapper(self._runtime))
-    # tfa_env = tf_py_environment.TFPyEnvironment(
-    #   parallel_py_environment.ParallelPyEnvironment(
-    #     [lambda: TFAWrapper(self._runtime)] * self._params["ML"]["Agent"]["num_parallel_environments"]))
-    # self._agent = SACGraphAgent(tfa_env, params=self._params)
     # self._agent = SACAgent(tfa_env, params=self._params)
     # self._agent = PPOAgent(tfa_env, params=self._params)
+    if self._params["type"] == "graph":
+      self._agent = PPOAgentGNN(tfa_env, params=self._params)
+    else:
+      self._agent = PPOAgent(tfa_env, params=self._params)
+    
     if self._params["type"] == "graph":
       self._agent = PPOAgentGNN(tfa_env, params=self._params)
     else:
