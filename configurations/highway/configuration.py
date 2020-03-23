@@ -5,11 +5,7 @@ import matplotlib.pyplot as plt
 if os.environ.get('DISPLAY') == ':0':
   print('No display found. Using non-interactive Agg backend')
   mpl.use('Agg')
-<<<<<<< HEAD
-
-=======
 import logging
->>>>>>> 2f3d503ba54563298697c6ffcd8068183608ad74
 from absl import app
 from absl import flags
 import tensorflow as tf

@@ -25,14 +25,7 @@ class RuntimeRL(Runtime):
     self._observer = observer
     self._evaluator = evaluator
     self._collision_count = 0
-<<<<<<< HEAD
-
-    # make viewers available
-    self._observer.set_viewer(viewer)
-    self._evaluator.set_viewer(viewer)
-=======
     self._success_count = 0
->>>>>>> 2f3d503ba54563298697c6ffcd8068183608ad74
 
   def reset(self, scenario=None):
     """Resets the runtime and its objects
@@ -95,21 +88,12 @@ class RuntimeRL(Runtime):
     Returns:
         (next_state, reward, done, info) -- RL tuple
     """
-<<<<<<< HEAD
-    next_state = self._observer.observe(
-      world=self._world,
-      agents_to_observe=controlled_agents)
-    reward, done, info = self._evaluator.evaluate(world=world, action=action)
-    if info["collision"] == True:
-      self._collision_count += 1
-=======
     # TODO(@hart): could be multiple
     next_state = self._observer.observe(observed_world)
     reward, done, info = self._evaluator.evaluate(
       observed_world=observed_world,
       action=action,
       observed_state=next_state)
->>>>>>> 2f3d503ba54563298697c6ffcd8068183608ad74
     return next_state, reward, done, info
 
 

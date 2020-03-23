@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-
-from gym import spaces
-import numpy as np
-from bark.models.dynamic import StateDefinition
-from bark.geometry import Point2d, SignedDistance
-from modules.runtime.commons.parameters import ParameterServer
-import math
-import operator
-from src.commons.spaces import BoundedContinuous, Discrete
-=======
 import math
 from gym import spaces
 import numpy as np
@@ -18,7 +7,6 @@ from modules.runtime.commons.parameters import ParameterServer
 import math
 import operator
 from src.commons.py_spaces import BoundedContinuous, Discrete
->>>>>>> 2f3d503ba54563298697c6ffcd8068183608ad74
 
 from src.observers.observer import StateObserver
 
@@ -26,14 +14,9 @@ from src.observers.observer import StateObserver
 class GraphObserverV2(StateObserver):
   def __init__(self,
                max_num_vehicles=3,
-<<<<<<< HEAD
-               num_nearest_vehicles=2,
-               params=ParameterServer()):
-=======
                num_nearest_vehicles=4,
                params=ParameterServer(),
                viewer=None):
->>>>>>> 2f3d503ba54563298697c6ffcd8068183608ad74
     StateObserver.__init__(self, params)
     self._state_definition = [int(StateDefinition.X_POSITION),
                               int(StateDefinition.Y_POSITION),
