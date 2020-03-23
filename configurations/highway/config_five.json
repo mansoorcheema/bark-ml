@@ -137,7 +137,7 @@
                   },
                   {
                     "VehicleModel": {
-                    "behavior_model": "BehaviorIDMClassic",
+                    "behavior_model": "BehaviorConstantVelocity",
                     "dynamic_model": "SingleTrackModel",
                     "execution_model": "ExecutionModelInterpolate",
                     "id": 101,
@@ -262,7 +262,7 @@
                   },
                   {
                     "VehicleModel": {
-                    "behavior_model": "BehaviorIDMClassic",
+                    "behavior_model": "BehaviorConstantVelocity",
                     "dynamic_model": "SingleTrackModel",
                     "execution_model": "ExecutionModelInterpolate",
                     "id": 102,
@@ -388,7 +388,7 @@
                   },
                   {
                     "VehicleModel": {
-                    "behavior_model": "BehaviorIDMClassic",
+                    "behavior_model": "BehaviorConstantVelocity",
                     "dynamic_model": "SingleTrackModel",
                     "execution_model": "ExecutionModelInterpolate",
                     "id": 103,
@@ -514,7 +514,7 @@
                   },
                   {
                     "VehicleModel": {
-                    "behavior_model": "BehaviorIDMClassic",
+                    "behavior_model": "BehaviorConstantVelocity",
                     "dynamic_model": "SingleTrackModel",
                     "execution_model": "ExecutionModelInterpolate",
                     "id": 104,
@@ -648,8 +648,8 @@
   },
   "ML": {
     "Agent": {
-        "actor_fc_layer_params": [256],
-        "critic_fc_layer_params": [256],
+        "actor_fc_layer_params": [256, 256],
+        "critic_fc_layer_params": [256, 256],
         "learning_rate": 1e-3,
         "num_epochs": 30,
         "agent_name": "ppo_agent",
@@ -660,13 +660,15 @@
         "parallel_buffer_calls": 1,
         "buffer_num_steps": 1,
         "buffer_prefetch": 1,
+        "normalize_reward": true, 
+        "batch_size": 256,
         "checkpoint_path": "configurations/highway/checkpoints/"
     },
     "Runner": {
         "number_of_collections": 550000,
         "initial_collection_steps": 25,
         "collection_episodes_per_cycle": 2,
-        "evaluate_every_n_steps": 250,
+        "evaluate_every_n_steps": 25,
         "evaluation_steps": 25,
         "summary_path": "configurations/highway/summaries/"
     },
@@ -684,8 +686,11 @@
     "DynamicModel": {
       "action_dimension": 2,
       "action_num": 1,
-      "actions_lower_bound": [-1.0, -0.15],
-      "actions_upper_bound": [1.0, 0.15]
+      "actions_lower_bound": [-5.0, -0.15],
+      "actions_upper_bound": [1.5, 0.15]
     }
+  },
+  "World": {
+      "remove_agents_out_of_map": false
   }
 }

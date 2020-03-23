@@ -6,38 +6,56 @@ from configurations.base_configuration import BaseConfiguration
 from bark.world import World, ObservedWorld
 
 # include all configurations
-from configurations.sac_highway.configuration import SACHighwayConfiguration
+from configurations.highway.configuration import HighwayConfiguration
 
-class BARKMLBehaviorModel(DynamicBehaviorModel):
+class BARKMLBehaviorModel(BehaviorModel):
   """This class makes a trained agent available as BehaviorModel
-     in BARK. There will be no evaluation from the side of the 
-     agent. Thus, a BARKAgent will only use the observer and agent
-     from the configuration.
+     in BARK.
   """
   def __init__(self,
-               configuration=None,
-               dynamic_model = None,
-               agents_to_observe=None):
-    DynamicBehaviorModel.__init__(self, dynamic_model, configuration._params)
+               configuration=None):
+    BehaviorModel.__init__(self, configuration._params)
     self._configuration = configuration
-    self._dynamic_model = dynamic_model
-    self._agents_to_observe = agents_to_observe
+    self._dynamic_behavior_model = DynamicBehaviorModel(
+      self._configuration._behavior_model._dynamic_model,
+      configuration._params)
 
-  def plan(self, delta_time, world):
-    # world is a observed world here
+  def Plan(self, delta_time, observed_world):
+    self._configuration._observer.reset(observed_world, [0])
     observed_state = self._configuration._observer.observe(
-      world=world,
-      agents_to_observe=self._agents_to_observe)
+      observed_world)
     action = self._configuration._agent.act(observed_state)
+    self._dynamic_behavior_model.SetLastAction(action)
+    trajectory = self._dynamic_behavior_model.Plan(delta_time, observed_world)
+    super(BARKMLBehaviorModel, self).SetLastTrajectory(trajectory)
+    return trajectory
 
-    # need to pass the action
-    super(BARKMLBehaviorModel, self).set_last_action(np.array([1., 2.]))
-
-    observed_world = world
-    if not isinstance(observed_world, ObservedWorld):
-      observed_world = world.observe(self._agents_to_observe)[0]
-
-    return super(BARKMLBehaviorModel, self).plan(delta_time, observed_world)
-
-  def clone(self):
+  def Clone(self):
     return self
+
+  # def __getstate__(self):
+  #   try:
+  #     del self.__dict__['_configuration']
+  #   except:
+  #     pass
+  #   try:
+  #     del self.__dict__['_dynamic_behavior_model']
+  #   except:
+  #     pass
+  #   odict = self.__dict__.copy()
+  #   return odict
+  
+  # def __setstate__(self, sdict):
+  #   # HACK
+  #   base_dir = "/home/hart/Dokumente/2020/bark-ml"
+  #   params = ParameterServer(filename=base_dir + "/configurations/highway/config.json")
+  #   scenario_generation = params["Scenario"]["Generation"]["ConfigurableScenarioGeneration"]
+  #   map_filename = scenario_generation["MapFilename"]
+  #   scenario_generation["MapFilename"] = base_dir + "/" + map_filename
+  #   params["BaseDir"] = base_dir
+  #   sdict['_configuration'] = HighwayConfiguration(params)
+  #   sdict['_dynamic_behavior_model'] = DynamicBehaviorModel(
+  #     sdict['_configuration']._behavior_model._dynamic_model,
+  #     sdict['_configuration']._params)
+  #   BehaviorModel.__init__(self, sdict['_configuration']._params)
+  #   self.__dict__.update(sdict)

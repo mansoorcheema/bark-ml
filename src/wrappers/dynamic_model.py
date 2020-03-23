@@ -1,7 +1,7 @@
 
 import numpy as np
 import itertools
-from src.commons.spaces import Discrete, BoundedContinuous
+from src.commons.py_spaces import Discrete, BoundedContinuous
 from bark.models.behavior import DynamicBehaviorModel
 from bark.models.dynamic import SingleTrackModel, TripleIntegratorModel
 from modules.runtime.commons.parameters import ParameterServer

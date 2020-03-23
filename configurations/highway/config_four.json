@@ -530,7 +530,7 @@
         "debug_summaries": false,
         "replay_buffer_capacity": 10000,
         "max_ckpts_to_keep": 3,
-        "num_parallel_environments": 30,
+        "num_parallel_environments": 1,
         "parallel_buffer_calls": 1,
         "buffer_num_steps": 1,
         "buffer_prefetch": 1,

@@ -1,12 +1,12 @@
 
 from gym import spaces
 import numpy as np
-from bark.models.dynamic import StateDefinition
-from modules.runtime.commons.parameters import ParameterServer
 import math
 import operator
-from src.commons.spaces import BoundedContinuous, Discrete
 
+from bark.models.dynamic import StateDefinition
+from bark.world import ObservedWorld
+from modules.runtime.commons.parameters import ParameterServer
 from src.observers.observer import StateObserver
 
 
@@ -23,7 +23,7 @@ class SimpleObserver(StateObserver):
       self._max_num_vehicles*self._len_state
     self._normalize_observations = normalize_observations
 
-  def observe(self, world, agents_to_observe):
+  def observe(self, world):
     """see base class
     """
     concatenated_state = np.zeros(self._observation_len, dtype=np.float32)
@@ -66,8 +66,7 @@ class SimpleObserver(StateObserver):
                  self._velocity_range)
     return agent_state
 
-  def reset(self, world, agents_to_observe):
-    super(SimpleObserver, self).reset(world, agents_to_observe)
+  def reset(self, world, controlled_agent_ids):
     return world
 
   @property

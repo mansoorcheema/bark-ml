@@ -23,6 +23,7 @@ class CustomEvaluator(GoalReached):
     self._evaluators["goal_reached"] = EvaluatorGoalReached(
       self._controlled_agents[0])
     self._evaluators["drivable_area"] = EvaluatorDrivableArea()
+<<<<<<< HEAD
     self._evaluators["collision"] = \
       EvaluatorCollisionEgoAgent(self._controlled_agents[0])
     self._evaluators["step_count"] = EvaluatorStepCount()
@@ -41,10 +42,44 @@ class CustomEvaluator(GoalReached):
     desired_v = 15.
     delta_v = 0.
     for idx in [100]:
+=======
+    self._evaluators["collision"] = EvaluatorCollisionEgoAgent()
+    self._evaluators["step_count"] = EvaluatorStepCount()
+
+<<<<<<< HEAD:configurations/sac_merging/custom_evaluator.py
+  def distance_to_goal(self, world):
+    d = 0.
+    for idx in self._controlled_agents:
+      agent = world.agents[idx]
+      state = agent.state
+      goal_poly = agent.goal_definition.goal_shape
+      # TODO(@hart): fix.. offset 0.75 so we drive to the middle of the polygon
+      d += Distance(goal_poly, Point2d(state[1] + 0.75, state[2]))
+    return d
+
+  def deviation_velocity(self, world):
+    desired_v = 10.
+    delta_v = 0.
+    for idx in self._controlled_agents:
+>>>>>>> 2f3d503ba54563298697c6ffcd8068183608ad74
       vel = world.agents[idx].state[int(StateDefinition.VEL_POSITION)]
       delta_v += (desired_v-vel)**2
     return delta_v
   
+<<<<<<< HEAD
+=======
+=======
+  def distance_to_goal(self, observed_world):
+    ego_agent = observed_world.ego_agent
+    goal_def = ego_agent.goal_definition
+    goal_center_line = goal_def.center_line
+    ego_agent_state = ego_agent.state
+    lateral_offset = Distance(goal_center_line,
+                              Point2d(ego_agent_state[1], ego_agent_state[2]))
+    return lateral_offset
+
+>>>>>>> 2f3d503ba54563298697c6ffcd8068183608ad74:configurations/highway/custom_evaluator.py
+>>>>>>> 2f3d503ba54563298697c6ffcd8068183608ad74
   def calculate_reward(self, world, eval_results, action):
     success = eval_results["goal_reached"]
     collision = eval_results["collision"]
@@ -57,6 +92,7 @@ class CustomEvaluator(GoalReached):
 
     # TODO(@hart): use parameter server
     inpt_reward = np.sqrt(np.sum((1/0.15*delta)**2 + (accs)**2))
+<<<<<<< HEAD
     reward = collision * self._collision_penalty + \
       success * self._goal_reward - 0.01*inpt_reward - \
       0.001*distance_to_goals**2 + drivable_area * self._collision_penalty
@@ -64,6 +100,22 @@ class CustomEvaluator(GoalReached):
     return reward
 
   def _evaluate(self, world, eval_results, action):
+=======
+<<<<<<< HEAD:configurations/sac_merging/custom_evaluator.py
+    reward = 1. - collision * self._collision_penalty + \
+      success * self._goal_reward - 0.01*inpt_reward - \
+      0.1*distance_to_goals + drivable_area * self._collision_penalty - \
+      0.1*self.deviation_velocity(world)
+=======
+    reward = 1. + collision * self._collision_penalty + \
+      success * self._goal_reward - 0.1*inpt_reward - \
+      0.01*distance_to_goals**2 + drivable_area * self._collision_penalty
+
+>>>>>>> 2f3d503ba54563298697c6ffcd8068183608ad74:configurations/highway/custom_evaluator.py
+    return reward
+
+  def _evaluate(self, observed_world, eval_results, action, observed_state):
+>>>>>>> 2f3d503ba54563298697c6ffcd8068183608ad74
     """Returns information about the current world state
     """
     done = False
@@ -72,8 +124,21 @@ class CustomEvaluator(GoalReached):
     drivable_area = eval_results["drivable_area"]
     step_count = eval_results["step_count"]
 
+<<<<<<< HEAD
     reward = self.calculate_reward(world, eval_results, action)    
     if step_count > self._max_steps or collision or drivable_area or success:
       done = True
     return reward, done, eval_results
     
+=======
+<<<<<<< HEAD:configurations/sac_merging/custom_evaluator.py
+    print("Drivable area: {}, Collision: {}.".format(str(drivable_area), str(collision)))
+    reward = self.calculate_reward(world, eval_results, action)    
+=======
+    reward = self.calculate_reward(observed_world, eval_results, action)    
+>>>>>>> 2f3d503ba54563298697c6ffcd8068183608ad74:configurations/highway/custom_evaluator.py
+    if step_count > self._max_steps or collision or drivable_area or success:
+      done = True
+    return reward, done, eval_results
+    
+>>>>>>> 2f3d503ba54563298697c6ffcd8068183608ad74

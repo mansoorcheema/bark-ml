@@ -418,9 +418,9 @@
           "checkpoint_path": "configurations/highway/checkpoints/"
         },
         "Agent": {
-          "actor_fc_layer_params": [256],
-          "critic_fc_layer_params": [256],
-          "learning_rate": 1e-3,
+          "actor_fc_layer_params": [256, 256],
+          "critic_fc_layer_params": [256, 256],
+          "learning_rate": 1e-4,
           "num_epochs": 30,
           "agent_name": "ppo_agent",
           "debug_summaries": true,

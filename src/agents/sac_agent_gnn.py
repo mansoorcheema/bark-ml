@@ -2,24 +2,24 @@ import tensorflow as tf
 
 # tfa
 from tf_agents.networks import actor_distribution_network
-from tf_agents.networks import actor_distribution_rnn_network
-from tf_agents.networks import value_network
-from tf_agents.networks import value_rnn_network
+from tf_agents.networks import normal_projection_network
+from tf_agents.agents.ddpg import critic_network
 from tf_agents.policies import greedy_policy
 
-from tf_agents.agents.ppo import ppo_agent
+from tf_agents.agents.sac import sac_agent
 from tf_agents.replay_buffers import tf_uniform_replay_buffer
 from tf_agents.utils.common import Checkpointer
 from tf_agents.trajectories import time_step as ts
 
 from src.agents.tfa_agent import TFAAgent
+
 from source.gnn_wrapper import GNNWrapper
-from source.tfa_value_net import GNNValueNetwork
 from source.tfa_actor_net import GNNActorNetwork
+from source.tfa_critic_net import GNNCriticNetwork
 
 
-class PPOAgentGNN(TFAAgent):
-  """PPO-Agent
+class SACAgentGNN(TFAAgent):
+  """SAC-Agent
      This agent is based on the tf-agents library.
   """
   def __init__(self,
@@ -27,19 +27,17 @@ class PPOAgentGNN(TFAAgent):
                replay_buffer=None,
                checkpointer=None,
                dataset=None,
-               params=None,
-               use_rnns=False):
-    self._use_rnns = use_rnns
+               params=None):
     TFAAgent.__init__(self,
                       environment=environment,
                       params=params)
     self._replay_buffer = self.get_replay_buffer()
-    # self._dataset = self.get_dataset()
+    self._dataset = self.get_dataset()
     self._collect_policy = self.get_collect_policy()
     self._eval_policy = self.get_eval_policy()
 
   def get_agent(self, env, params):
-    """Returns a TensorFlow PPO-Agent
+    """Returns a TensorFlow SAC-Agent
     
     Arguments:
         env {TFAPyEnvironment} -- Tensorflow-Agents PyEnvironment
@@ -49,45 +47,38 @@ class PPOAgentGNN(TFAAgent):
         agent -- tf-agent
     """
 
-    # actor_net = actor_distribution_network.ActorDistributionNetwork(
-    #     env.observation_spec(),
-    #     env.action_spec(),
-    #     fc_layer_params=tuple(
-    #       self._params["ML"]["Agent"]["actor_fc_layer_params"]))
-    # value_net = value_network.ValueNetwork(
-    #   env.observation_spec(),
-    #   fc_layer_params=tuple(
-    #     self._params["ML"]["Agent"]["critic_fc_layer_params"]))
     actor_net = GNNActorNetwork(
       env.observation_spec(),
       env.action_spec(),
       fc_layer_params=tuple(
         self._params["ML"]["Agent"]["actor_fc_layer_params"]))
 
-    value_net = GNNValueNetwork(
-      env.observation_spec(),
-      fc_layer_params=tuple(
-        self._params["ML"]["Agent"]["critic_fc_layer_params"]))
-
+    critic_net = GNNCriticNetwork(
+      (env.observation_spec(), env.action_spec()),
+      observation_fc_layer_params=None,
+      action_fc_layer_params=None,
+      joint_fc_layer_params=tuple(
+        self._params["ML"]["Agent"]["critic_joint_fc_layer_params", "", [256]]))
+    
     # agent
-    tf_agent = ppo_agent.PPOAgent(
+    tf_agent = sac_agent.SacAgent(
       env.time_step_spec(),
       env.action_spec(),
-      actor_net=actor_net,
-      value_net=value_net,
-<<<<<<< HEAD
-      normalize_observations=self._params["ML"]["Agent"]["normalize_observations"],
-      normalize_rewards=self._params["ML"]["Agent"]["normalize_rewards"],
-=======
-      normalize_observations=self._params["ML"]["Agent"][
-        "normalize_observations", "", False],
-      normalize_rewards=self._params["ML"]["Agent"][
-        "normalize_rewards", "", False],
->>>>>>> 2f3d503ba54563298697c6ffcd8068183608ad74
-      optimizer=tf.compat.v1.train.AdamOptimizer(
-          learning_rate=self._params["ML"]["Agent"]["learning_rate"]),
+      actor_network=actor_net,
+      critic_network=critic_net,
+      actor_optimizer=tf.compat.v1.train.AdamOptimizer(
+          learning_rate=self._params["ML"]["Agent"]["actor_learning_rate"]),
+      critic_optimizer=tf.compat.v1.train.AdamOptimizer(
+          learning_rate=self._params["ML"]["Agent"]["critic_learning_rate"]),
+      alpha_optimizer=tf.compat.v1.train.AdamOptimizer(
+          learning_rate=self._params["ML"]["Agent"]["alpha_learning_rate"]),
+      target_update_tau=self._params["ML"]["Agent"]["target_update_tau"],
+      target_update_period=self._params["ML"]["Agent"]["target_update_period"],
+      td_errors_loss_fn=tf.compat.v1.losses.mean_squared_error,
+      gamma=self._params["ML"]["Agent"]["gamma"],
+      reward_scale_factor=self._params["ML"]["Agent"]["reward_scale_factor"],
+      gradient_clipping=self._params["ML"]["Agent"]["gradient_clipping"],
       train_step_counter=self._ckpt.step,
-      num_epochs=self._params["ML"]["Agent"]["num_epochs"],
       name=self._params["ML"]["Agent"]["agent_name"],
       debug_summaries=self._params["ML"]["Agent"]["debug_summaries"])
     tf_agent.initialize()
@@ -101,8 +92,21 @@ class PPOAgentGNN(TFAAgent):
     """
     return tf_uniform_replay_buffer.TFUniformReplayBuffer(
       data_spec=self._agent.collect_data_spec,
-      batch_size=self._params["ML"]["Agent"]["num_parallel_environments"],
+      batch_size=self._env.batch_size,
       max_length=self._params["ML"]["Agent"]["replay_buffer_capacity"])
+
+  def get_dataset(self):
+    """Dataset generated of the replay buffer
+    
+    Returns:
+        dataset -- subset of experiences
+    """
+    dataset = self._replay_buffer.as_dataset(
+      num_parallel_calls=self._params["ML"]["Agent"]["parallel_buffer_calls"],
+      sample_batch_size=self._params["ML"]["Agent"]["batch_size"],
+      num_steps=self._params["ML"]["Agent"]["buffer_num_steps"]) \
+        .prefetch(self._params["ML"]["Agent"]["buffer_prefetch"])
+    return dataset
 
   def get_collect_policy(self):
     """Returns the collection policy of the agent
@@ -118,7 +122,7 @@ class PPOAgentGNN(TFAAgent):
     Returns:
         GreedyPolicy -- Always returns best suitable action
     """
-    return self._agent.policy
+    return greedy_policy.GreedyPolicy(self._agent.policy)
 
   def reset(self):
     pass
