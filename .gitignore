@@ -161,3 +161,6 @@ web/node_modules
 **.mp4
 *.img
 *DR_DEU_Merging_MT.xodr*
+*.png
+*.p
+tests/data/database_maps_DR_DEU_Merging_MT_shifted.xodr

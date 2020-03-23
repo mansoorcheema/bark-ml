@@ -13,7 +13,6 @@ from tf_agents.utils.common import Checkpointer
 from tf_agents.trajectories import time_step as ts
 
 from src.agents.tfa_agent import TFAAgent
-from source.gnn_wrapper import GNNWrapper
 from source.tfa_value_net import GNNValueNetwork
 from source.tfa_actor_net import GNNActorNetwork
 
