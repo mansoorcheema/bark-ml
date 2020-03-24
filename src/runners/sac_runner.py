@@ -48,7 +48,7 @@ class SACRunner(TFARunner):
     else:
       self._train()
   
-  def evaluate(self):
+  def evaluate(self, num=1):
     """Evaluates the agent
        Need to overwrite the class of the base function as the metric class somehow does
        not work.
@@ -62,11 +62,11 @@ class SACRunner(TFARunner):
     steps = []
     if self._unwrapped_runtime is not None:
       for _ in range(0, self._params["ML"]["Runner"]["evaluation_steps"]):
-        state = self._unwrapped_runtime.reset()
+        state = np.array([self._unwrapped_runtime.reset()], dtype=np.float32)
         is_terminal = False
         while not is_terminal:
           action_step = self._agent._eval_policy.action(
-            ts.transition(state, reward=0.0, discount=1.0))
+            ts.transition(np.array([state], dtype=np.float32), reward=0.0, discount=1.0))
           state, reward, is_terminal, _ = self._unwrapped_runtime.step(
             action_step.action.numpy())
           rewards.append(reward)
@@ -100,3 +100,19 @@ class SACRunner(TFARunner):
       if global_iteration % self._params["ML"]["Runner"]["evaluate_every_n_steps"] == 0:
         self.evaluate()
         self._agent.save()
+
+  def visualize(self, num_episodes=1):
+    # Ticket (https://github.com/tensorflow/agents/issues/59) recommends
+    # to do the rendering in the original environment
+    if self._unwrapped_runtime is not None:
+      for _ in range(0, num_episodes):
+        state = np.array([self._unwrapped_runtime.reset()], dtype=np.float32)
+        is_terminal = False
+        while not is_terminal:
+          print(state)
+          action_step = self._agent._eval_policy.action(ts.transition(np.array([state], dtype=np.float32), reward=0.0, discount=1.0))
+          print(action_step)
+          # TODO(@hart); make generic for multi agent planning
+          state, reward, is_terminal, _ = self._unwrapped_runtime.step(action_step.action.numpy())
+          print(reward)
+          self._unwrapped_runtime.render()

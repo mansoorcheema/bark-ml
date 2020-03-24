@@ -49,7 +49,9 @@ class GraphObserverV2(StateObserver):
       agent_point, num_nearest)
     agent_id_list = []
     for nid in nearest_agents:
-      if nid not in agent_id_list and nid != agent_id:
+      # TODO(@hart): evaluate self-connections
+      # if nid not in agent_id_list and nid != agent_id:
+      if nid not in agent_id_list:
         agent_id_list.append(nid)
     return agent_id_list
 

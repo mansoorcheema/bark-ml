@@ -24,7 +24,7 @@ def load_bark():
   _maybe(
     native.local_repository,
     name = "gnn_lib",
-    path="/home/hart/Dokumente/2020/gcn",
+    path="/Users/hart/2020/gnn",
   )
   # _maybe(
   #   git_repository,
