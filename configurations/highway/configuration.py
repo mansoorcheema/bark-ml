@@ -36,11 +36,7 @@ flags.DEFINE_enum('type',
 
 
 def run_configuration(argv):
-  params = ParameterServer(
-    filename=FLAGS.base_dir + "/configurations/highway/config.json")
-  scenario_generation = params["Scenario"]["Generation"]["ConfigurableScenarioGeneration"]  # NOLINT
-  map_filename = scenario_generation["MapFilename"]
-  scenario_generation["MapFilename"] = FLAGS.base_dir + "/" + map_filename
+  params = ParameterServer(filename=FLAGS.base_dir + "/configurations/highway/config.json")
   params["BaseDir"] = FLAGS.base_dir
   params["type"] = FLAGS.type
   configuration = HighwayConfiguration(params)

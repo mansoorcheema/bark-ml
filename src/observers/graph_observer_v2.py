@@ -13,8 +13,8 @@ from src.observers.observer import StateObserver
 
 class GraphObserverV2(StateObserver):
   def __init__(self,
-               max_num_vehicles=3,
-               num_nearest_vehicles=4,
+               max_num_vehicles=5,
+               num_nearest_vehicles=5,
                params=ParameterServer(),
                viewer=None):
     StateObserver.__init__(self, params)
@@ -22,7 +22,7 @@ class GraphObserverV2(StateObserver):
                               int(StateDefinition.Y_POSITION),
                               int(StateDefinition.THETA_POSITION),
                               int(StateDefinition.VEL_POSITION)]
-    self._h0_len = 3
+    self._h0_len = 4
     self._e0_len = 2
     self._num_nearest_vehicles = num_nearest_vehicles
     self._max_num_vehicles = max_num_vehicles
@@ -58,6 +58,9 @@ class GraphObserverV2(StateObserver):
     reduced_state = self._select_state_by_index(agent.state)
     vx = np.cos(reduced_state[2])*reduced_state[3]
     vy = np.sin(reduced_state[2])*reduced_state[3]
+    
+    x = self._norm(reduced_state[0], self._world_x_range)
+    y = self._norm(reduced_state[1], self._world_y_range)
     d_goal = 0.
     if agent.road_corridor:
       goal_def = agent.goal_definition
@@ -72,7 +75,7 @@ class GraphObserverV2(StateObserver):
     n_d_goal = self._norm(d_goal, [-8., 8.])
     # print(agent_id, [n_vx, n_vy, n_d_goal])
     # TODO(@hart): HACK; remove
-    return np.array([n_vx, n_vy, n_d_goal], dtype=np.float32)
+    return np.array([x, y, n_vx, n_vy], dtype=np.float32)
 
   def CalculateEdgeValue(self, observed_world, from_id, to_id):
     from_agent = observed_world.agents[from_id]
@@ -105,7 +108,7 @@ class GraphObserverV2(StateObserver):
     if self._viewer is not None:
       self._viewer.clear()
     gen_graph = -1.*np.ones(
-      shape=(int(self._num_graph_rows), 7),
+      shape=(int(self._num_graph_rows), 8),
       dtype=np.float32)
     # 1. make sure ego agent is in front
     # id_list = self.OrderedAgentIds(observed_world, [observed_world.ego_agent.id])
@@ -148,6 +151,7 @@ class GraphObserverV2(StateObserver):
     return (state - range[0])/(range[1]-range[0])
 
   def reset(self, world):
+    world = super().reset(world)
     return world
 
   @property
@@ -155,7 +159,7 @@ class GraphObserverV2(StateObserver):
     return spaces.Box(
       low=0.,
       high=1.,
-      shape=(int(self._num_graph_rows), 7))
+      shape=(int(self._num_graph_rows), 8))
 
   @property
   def _len_state(self):

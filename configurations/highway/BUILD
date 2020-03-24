@@ -7,6 +7,19 @@ filegroup(
 )
 
 py_library(
+    name = "scenario_conf",
+    srcs = ["scenario_conf.py"],
+    data = ["@bark_project//python:bark.so"],
+    imports = ["../../python/",
+               "../external/bark_project/python/"],
+    deps = ["@bark_project//modules/runtime:runtime",
+            "//src/evaluators:evaluators",
+            "//configurations:bark_agent"
+            ],
+    visibility = ["//visibility:public"],
+)
+
+py_library(
     name = "custom_evaluator",
     srcs = ["custom_evaluator.py"],
     data = ["@bark_project//python:bark.so"],
@@ -33,7 +46,8 @@ py_library(
           "//src/runners:runners",
           "//configurations:base_configuration",
           ":custom_evaluator",
-          "@bark_project//modules/runtime/viewer:video_renderer"],
+          "@bark_project//modules/runtime/viewer:video_renderer",
+          ":scenario_conf"],
   visibility = ["//visibility:public"],
 )
 

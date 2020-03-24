@@ -10,6 +10,9 @@ from modules.runtime.scenario.scenario_generation.deterministic \
   import DeterministicScenarioGeneration
 from modules.runtime.scenario.scenario_generation.configurable_scenario_generation import \
   ConfigurableScenarioGeneration
+from modules.runtime.scenario.scenario_generation.config_with_ease import \
+  LaneCorridorConfig, ConfigWithEase
+
 
 from modules.runtime.commons.parameters import ParameterServer
 from modules.runtime.viewer.matplotlib_viewer import MPViewer
@@ -34,7 +37,9 @@ from configurations.base_configuration import BaseConfiguration
 
 # configuration specific evaluator
 from configurations.highway.custom_evaluator import CustomEvaluator
-# from bark_ml.observers import NearestObserver
+from configurations.highway.scenario_conf import LeftLaneCorridorConfig, \
+  RightLaneCorridorConfig
+
 
 class HighwayConfiguration(BaseConfiguration):
   """Hermetic and reproducible configuration class
@@ -48,20 +53,21 @@ class HighwayConfiguration(BaseConfiguration):
   def _build_configuration(self):
     """Builds a configuration using an agent
     """
-    # self._scenario_generator = \
-    #   DeterministicScenarioGeneration(num_scenarios=250,
-    #                                   random_seed=0,
-    #                                   params=self._params)
     self._scenario_generator = \
-      ConfigurableScenarioGeneration(num_scenarios=100,
-                                     params=self._params)
+      ConfigWithEase(num_scenarios=10,
+                     map_file_name=self._params["BaseDir"] + "/tests/data/city_highway_straight.xodr",
+                     random_seed=0,
+                     params=self._params,
+                     lane_corridor_configs=[LeftLaneCorridorConfig(params=self._params),
+                                            RightLaneCorridorConfig(params=self._params)])
+
     self._behavior_model = DynamicModel(params=self._params)
     self._evaluator = CustomEvaluator(params=self._params)
     self._viewer  = MPViewer(params=self._params,
-                             # use_world_bounds=True)
-                             x_range=[-40, 40],
-                             y_range=[-40, 40],
-                             follow_agent_id=True)
+                             use_world_bounds=True)
+                            #  x_range=[-40, 40],
+                            #  y_range=[-40, 40],
+                            #  follow_agent_id=True)
     # self._viewer = VideoRenderer(renderer=self._viewer, world_step_time=0.2)
     if self._params["type"] == "graph":
       self._observer = GraphObserverV2(params=self._params,
