@@ -28,7 +28,7 @@ class LeftLaneCorridorConfig(LaneCorridorConfig):
   def position(self, world, min_s=10., max_s=150.):
     return super(LeftLaneCorridorConfig, self).position(world, min_s, max_s)
 
-  def ds(self, s_min=20., s_max=35.):
+  def ds(self, s_min=40., s_max=55.):
     return np.random.uniform(s_min, s_max)
   
   def controlled_goal(self, world):
@@ -59,9 +59,13 @@ class RightLaneCorridorConfig(LaneCorridorConfig):
   def position(self, world, min_s=10., max_s=150.):
     return super(RightLaneCorridorConfig, self).position(world, min_s, max_s)
 
-  def ds(self, s_min=20., s_max=35.):
+  def ds(self, s_min=40., s_max=55.):
     return np.random.uniform(s_min, s_max)
 
+  @property
+  def behavior_model(self):
+    return BehaviorConstantVelocity(self._params)
+    
   def controlled_goal(self, world):
     road_corr = world.map.GetRoadCorridor(self._road_ids, XodrDrivingDirection.forward)
     lane_corr = road_corr.lane_corridors[0]

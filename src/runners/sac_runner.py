@@ -95,7 +95,9 @@ class SACRunner(TFARunner):
       self._collection_driver.run()
 
       experience, _ = next(iterator)
+      # tf.profiler.experimental.start(self._params["BaseDir"] + "/" + self._params["ML"]["Runner"]["summary_path"])
       self._agent._agent.train(experience)
+      # tf.profiler.experimental.stop()
 
       if global_iteration % self._params["ML"]["Runner"]["evaluate_every_n_steps"] == 0:
         self.evaluate()
@@ -110,7 +112,9 @@ class SACRunner(TFARunner):
         is_terminal = False
         while not is_terminal:
           print(state)
+          # tf.profiler.experimental.start(self._params["BaseDir"] + "/" + self._params["ML"]["Runner"]["summary_path"])
           action_step = self._agent._eval_policy.action(ts.transition(np.array([state], dtype=np.float32), reward=0.0, discount=1.0))
+          # tf.profiler.experimental.stop()
           print(action_step)
           # TODO(@hart); make generic for multi agent planning
           state, reward, is_terminal, _ = self._unwrapped_runtime.step(action_step.action.numpy())

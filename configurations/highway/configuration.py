@@ -19,6 +19,7 @@ from tf_agents.trajectories import time_step as ts
 # configuration specific evaluator
 from configurations.highway.custom_evaluator import CustomEvaluator
 from configurations.highway.configuration_lib import HighwayConfiguration
+tf.keras.backend.set_learning_phase(0) 
 
 FLAGS = flags.FLAGS
 flags.DEFINE_enum('mode',
