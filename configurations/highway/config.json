@@ -30,7 +30,7 @@
         "reward_scale_factor": 3.0,
         "gradient_clipping": null, 
         "agent_name": "sac_agent",
-        "debug_summaries": "False",
+        "debug_summaries": "True",
         "replay_buffer_capacity": 100000,
         "max_ckpts_to_keep": 3,
         "parallel_buffer_calls": 3,
@@ -59,7 +59,7 @@
         "number_of_collections": 5000000,
         "initial_collection_steps": 10,
         "collection_episodes_per_cycle": 1,
-        "evaluate_every_n_steps": 100,
+        "evaluate_every_n_steps": 20,
         "evaluation_steps": 5,
         "summary_path": "configurations/highway/summaries/"
       },

@@ -46,12 +46,21 @@ class SACAgentGNN(TFAAgent):
     Returns:
         agent -- tf-agent
     """
+    def _normal_projection_net(action_spec, init_means_output_factor=0.1):
+      return normal_projection_network.NormalProjectionNetwork(
+        action_spec,
+        mean_transform=None,
+        state_dependent_std=True,
+        init_means_output_factor=init_means_output_factor,
+        std_transform=sac_agent.std_clip_transform,
+        scale_distribution=True)
 
     actor_net = GNNActorNetwork(
       env.observation_spec(),
       env.action_spec(),
       fc_layer_params=tuple(
-        self._params["ML"]["Agent"]["actor_fc_layer_params"]))
+        self._params["ML"]["Agent"]["actor_fc_layer_params"]),
+      continuous_projection_net=_normal_projection_net)
 
     critic_net = GNNCriticNetwork(
       (env.observation_spec(), env.action_spec()),
@@ -80,7 +89,7 @@ class SACAgentGNN(TFAAgent):
       gradient_clipping=self._params["ML"]["Agent"]["gradient_clipping"],
       train_step_counter=self._ckpt.step,
       name=self._params["ML"]["Agent"]["agent_name"],
-      debug_summaries=False)
+      debug_summaries=True)
     tf_agent.initialize()
     return tf_agent
 

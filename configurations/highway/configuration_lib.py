@@ -22,7 +22,7 @@ from modules.runtime.viewer.pygame_viewer import PygameViewer
 from src.rl_runtime import RuntimeRL
 from src.observers.nearest_state_observer import ClosestAgentsObserver
 from src.observers.graph_observer import GraphObserver
-from src.observers.graph_observer_v2 import GraphObserverV2
+from src.observers.graph_observer_v3 import GraphObserverV3
 from src.wrappers.dynamic_model import DynamicModel
 from src.wrappers.tfa_wrapper import TFAWrapper
 from src.evaluators.goal_reached import GoalReached
@@ -71,7 +71,7 @@ class HighwayConfiguration(BaseConfiguration):
                             #  follow_agent_id=True)
     # self._viewer = VideoRenderer(renderer=self._viewer, world_step_time=0.2)
     if self._params["type"] == "graph":
-      self._observer = GraphObserverV2(params=self._params,
+      self._observer = GraphObserverV3(params=self._params,
                                        max_num_vehicles=5,
                                        viewer=self._viewer)
     else:
