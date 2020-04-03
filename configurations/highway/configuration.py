@@ -23,7 +23,7 @@ tf.keras.backend.set_learning_phase(0)
 
 FLAGS = flags.FLAGS
 flags.DEFINE_enum('mode',
-                  'visualize',
+                  'train',
                   ['train', 'visualize', 'evaluate', 'ablation'],
                   'Mode the configuration should be executed in.')
 flags.DEFINE_string('base_dir',

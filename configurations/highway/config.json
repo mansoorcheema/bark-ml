@@ -20,14 +20,14 @@
       },
       "Agent": {
         "actor_fc_layer_params": [16],
-        "critic_joint_fc_layer_params": [16],
+        "critic_joint_fc_layer_params": [128],
         "actor_learning_rate": 3e-4,
         "critic_learning_rate": 3e-4,
         "alpha_learning_rate": 3e-4,
         "target_update_tau": 0.05,
         "target_update_period": 3,
-        "gamma": 0.995,
-        "reward_scale_factor": 3.0,
+        "gamma": 0.99,
+        "reward_scale_factor": 1.0,
         "gradient_clipping": null, 
         "agent_name": "sac_agent",
         "debug_summaries": "True",
@@ -59,8 +59,8 @@
         "number_of_collections": 5000000,
         "initial_collection_steps": 10,
         "collection_episodes_per_cycle": 1,
-        "evaluate_every_n_steps": 20,
-        "evaluation_steps": 5,
+        "evaluate_every_n_steps": 500,
+        "evaluation_steps": 25,
         "summary_path": "configurations/highway/summaries/"
       },
       "DynamicModel": {
