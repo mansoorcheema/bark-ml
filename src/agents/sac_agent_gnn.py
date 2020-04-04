@@ -64,8 +64,8 @@ class SACAgentGNN(TFAAgent):
 
     critic_net = GNNCriticNetwork(
       (env.observation_spec(), env.action_spec()),
-      observation_fc_layer_params=None,
-      action_fc_layer_params=None,
+      observation_fc_layer_params=[80],
+      action_fc_layer_params=[80],
       joint_fc_layer_params=tuple(
         self._params["ML"]["Agent"]["critic_joint_fc_layer_params", "", [256]]))
     
