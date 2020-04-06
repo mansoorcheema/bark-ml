@@ -58,14 +58,32 @@ class SACAgentGNN(TFAAgent):
     actor_net = GNNActorNetwork(
       env.observation_spec(),
       env.action_spec(),
+      node_layers_def=[
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+      ],
+      edge_layers_def=[
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+      ],
       fc_layer_params=tuple(
         self._params["ML"]["Agent"]["actor_fc_layer_params"]),
       continuous_projection_net=_normal_projection_net)
 
     critic_net = GNNCriticNetwork(
       (env.observation_spec(), env.action_spec()),
-      observation_fc_layer_params=[80],
-      action_fc_layer_params=[80],
+      node_layers_def=[
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+      ],
+      edge_layers_def=[
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+      ],
       joint_fc_layer_params=tuple(
         self._params["ML"]["Agent"]["critic_joint_fc_layer_params", "", [256]]))
     

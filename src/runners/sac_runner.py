@@ -114,6 +114,7 @@ class SACRunner(TFARunner):
           print(state)
           # tf.profiler.experimental.start(self._params["BaseDir"] + "/" + self._params["ML"]["Runner"]["summary_path"])
           action_step = self._agent._eval_policy.action(ts.transition(np.array([state], dtype=np.float32), reward=0.0, discount=1.0))
+          # print(self._agent._agent._actor_network.trainable_variables)
           # tf.profiler.experimental.stop()
           print(action_step)
           # TODO(@hart); make generic for multi agent planning
