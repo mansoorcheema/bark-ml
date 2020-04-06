@@ -91,7 +91,7 @@ class GraphObserverV3(StateObserver):
     # print("from_id: ", from_id, ", to_id:", to_id, ", dx: ", dx, ", dy: ", dy)
     n_dx = self._norm(dx, [-8., 8.])
     n_dy = self._norm(dy, [-250., 250.])
-    return np.array([0, 0], dtype=np.float32)
+    return np.array([n_dx, n_dx], dtype=np.float32)
 
   def observe(self, observed_world):
     """see base class

@@ -28,7 +28,7 @@ from src.wrappers.tfa_wrapper import TFAWrapper
 from src.evaluators.goal_reached import GoalReached
 # from src.agents.sac_agent import SACAgent
 from src.agents.ppo_agent import PPOAgent
-from src.agents.ppo_agent_gnn import PPOAgentGNN
+# from src.agents.ppo_agent_gnn import PPOAgentGNN
 from src.agents.sac_agent_gnn import SACAgentGNN
 from src.agents.sac_agent import SACAgent
 from src.runners.sac_runner import SACRunner

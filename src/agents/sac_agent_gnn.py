@@ -10,10 +10,10 @@ from tf_agents.agents.sac import sac_agent
 from tf_agents.replay_buffers import tf_uniform_replay_buffer
 from tf_agents.utils.common import Checkpointer
 from tf_agents.trajectories import time_step as ts
+from tf_agents.agents.sac import tanh_normal_projection_network
 
 from src.agents.tfa_agent import TFAAgent
 
-from source.gnn_wrapper import GNNWrapper
 from source.tfa_actor_net_new import GNNActorNetwork
 from source.tfa_critic_net import GNNCriticNetwork
 
@@ -46,43 +46,35 @@ class SACAgentGNN(TFAAgent):
     Returns:
         agent -- tf-agent
     """
-    def _normal_projection_net(action_spec, init_means_output_factor=0.1):
-      return normal_projection_network.NormalProjectionNetwork(
-        action_spec,
-        mean_transform=None,
-        state_dependent_std=True,
-        init_means_output_factor=init_means_output_factor,
-        std_transform=sac_agent.std_clip_transform,
-        scale_distribution=True)
 
     actor_net = GNNActorNetwork(
       env.observation_spec(),
       env.action_spec(),
       node_layers_def=[
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 20, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 20, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 20, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
       edge_layers_def=[
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 20, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 20, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 20, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
       fc_layer_params=tuple(
         self._params["ML"]["Agent"]["actor_fc_layer_params"]),
-      continuous_projection_net=_normal_projection_net)
+      continuous_projection_net=tanh_normal_projection_network.TanhNormalProjectionNetwork)
 
     critic_net = GNNCriticNetwork(
       (env.observation_spec(), env.action_spec()),
       node_layers_def=[
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 20, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 20, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 20, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
       edge_layers_def=[
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 20, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 20, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 20, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
       joint_fc_layer_params=tuple(
         self._params["ML"]["Agent"]["critic_joint_fc_layer_params", "", [256]]))
@@ -94,21 +86,20 @@ class SACAgentGNN(TFAAgent):
       actor_network=actor_net,
       critic_network=critic_net,
       actor_optimizer=tf.compat.v1.train.AdamOptimizer(
-          learning_rate=self._params["ML"]["Agent"]["actor_learning_rate"]),
+        learning_rate=self._params["ML"]["Agent"]["actor_learning_rate"]),
       critic_optimizer=tf.compat.v1.train.AdamOptimizer(
-          learning_rate=self._params["ML"]["Agent"]["critic_learning_rate"]),
+        learning_rate=self._params["ML"]["Agent"]["critic_learning_rate"]),
       alpha_optimizer=tf.compat.v1.train.AdamOptimizer(
-          learning_rate=self._params["ML"]["Agent"]["alpha_learning_rate"]),
+        learning_rate=self._params["ML"]["Agent"]["alpha_learning_rate"]),
       target_update_tau=self._params["ML"]["Agent"]["target_update_tau"],
       target_update_period=self._params["ML"]["Agent"]["target_update_period"],
-      td_errors_loss_fn=tf.compat.v1.losses.mean_squared_error,
       gamma=self._params["ML"]["Agent"]["gamma"],
       reward_scale_factor=self._params["ML"]["Agent"]["reward_scale_factor"],
       gradient_clipping=self._params["ML"]["Agent"]["gradient_clipping"],
       train_step_counter=self._ckpt.step,
-      summarize_grads_and_vars=True,
+      summarize_grads_and_vars=False,
       name=self._params["ML"]["Agent"]["agent_name"],
-      debug_summaries=True)
+      debug_summaries=False)
     tf_agent.initialize()
     return tf_agent
 
