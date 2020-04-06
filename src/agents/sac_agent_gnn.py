@@ -106,6 +106,7 @@ class SACAgentGNN(TFAAgent):
       reward_scale_factor=self._params["ML"]["Agent"]["reward_scale_factor"],
       gradient_clipping=self._params["ML"]["Agent"]["gradient_clipping"],
       train_step_counter=self._ckpt.step,
+      summarize_grads_and_vars=True,
       name=self._params["ML"]["Agent"]["agent_name"],
       debug_summaries=True)
     tf_agent.initialize()
