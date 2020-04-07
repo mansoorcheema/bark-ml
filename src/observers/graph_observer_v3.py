@@ -61,8 +61,8 @@ class GraphObserverV3(StateObserver):
     #     goal_center_line,
     #     Point2d(ego_agent_state[1], ego_agent_state[2]),
     #     reduced_state[3])
-    n_vx = self._norm(vx, [-8., 8.])
-    n_vy = self._norm(vy, [0., 20.])
+    n_vx = self._norm(vx, [-2., 2.])
+    n_vy = self._norm(vy, [5., 15.])
     # n_d_goal = self._norm(d_goal, [-8., 8.])
     # print(agent_id, [n_vx, n_vy, n_d_goal])
     # TODO(@hart): HACK; remove
@@ -89,9 +89,9 @@ class GraphObserverV3(StateObserver):
         alpha = 1.0
       self._viewer.drawLine2d(line, color=color, alpha=alpha)
     # print("from_id: ", from_id, ", to_id:", to_id, ", dx: ", dx, ", dy: ", dy)
-    n_dx = self._norm(dx, [-8., 8.])
-    n_dy = self._norm(dy, [-250., 250.])
-    return np.array([n_dx, n_dx], dtype=np.float32)
+    n_dx = self._norm(dx, [-6., 6.])
+    n_dy = self._norm(dy, [-50., 50.])
+    return np.array([n_dx, n_dy], dtype=np.float32)
 
   def observe(self, observed_world):
     """see base class
@@ -131,6 +131,12 @@ class GraphObserverV3(StateObserver):
                       id_list.index(agent_id)], dtype=np.float32)
           gen_graph[edge_row_idx, self._h0_len+2:] = \
             self.CalculateEdgeValue(observed_world, from_id, agent_id)
+          edge_row_idx += 1
+          gen_graph[edge_row_idx, :2] = \
+            np.array([id_list.index(agent_id),
+                      id_list.index(from_id)], dtype=np.float32)
+          gen_graph[edge_row_idx, self._h0_len+2:] = \
+            self.CalculateEdgeValue(observed_world, agent_id, from_id)
           edge_row_idx += 1
       node_row_idx += 1
     return gen_graph
