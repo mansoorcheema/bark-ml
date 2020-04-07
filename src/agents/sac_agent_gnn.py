@@ -51,14 +51,12 @@ class SACAgentGNN(TFAAgent):
       env.observation_spec(),
       env.action_spec(),
       node_layers_def=[
-        {"units" : 20, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 20, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 20, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
       edge_layers_def=[
-        {"units" : 20, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 20, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 20, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
       fc_layer_params=tuple(
         self._params["ML"]["Agent"]["actor_fc_layer_params"]),
@@ -67,14 +65,12 @@ class SACAgentGNN(TFAAgent):
     critic_net = GNNCriticNetwork(
       (env.observation_spec(), env.action_spec()),
       node_layers_def=[
-        {"units" : 20, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 20, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 20, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
       edge_layers_def=[
-        {"units" : 20, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 20, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
-        {"units" : 20, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
       joint_fc_layer_params=tuple(
         self._params["ML"]["Agent"]["critic_joint_fc_layer_params", "", [256]]))
@@ -98,6 +94,7 @@ class SACAgentGNN(TFAAgent):
       gradient_clipping=self._params["ML"]["Agent"]["gradient_clipping"],
       train_step_counter=self._ckpt.step,
       summarize_grads_and_vars=False,
+      target_entropy=-2, 
       name=self._params["ML"]["Agent"]["agent_name"],
       debug_summaries=False)
     tf_agent.initialize()

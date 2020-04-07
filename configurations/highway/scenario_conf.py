@@ -62,9 +62,9 @@ class RightLaneCorridorConfig(LaneCorridorConfig):
   def ds(self, s_min=40., s_max=55.):
     return np.random.uniform(s_min, s_max)
 
-  @property
-  def behavior_model(self):
-    return BehaviorConstantVelocity(self._params)
+  # @property
+  # def behavior_model(self):
+  #   return BehaviorConstantVelocity(self._params)
     
   def controlled_goal(self, world):
     road_corr = world.map.GetRoadCorridor(self._road_ids, XodrDrivingDirection.forward)

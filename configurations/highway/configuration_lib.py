@@ -55,7 +55,7 @@ class HighwayConfiguration(BaseConfiguration):
     """Builds a configuration using an agent
     """
     self._scenario_generator = \
-      ConfigWithEase(num_scenarios=10,
+      ConfigWithEase(num_scenarios=250,
                      map_file_name=self._params["BaseDir"] + "/tests/data/city_highway_straight.xodr",
                      random_seed=0,
                      params=self._params,
