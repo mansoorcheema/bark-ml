@@ -1,8 +1,8 @@
 {
   "ML": {
-      "PPOAgent": {
-        "actor_fc_layer_params": [512, 256, 256],
-        "critic_fc_layer_params": [512, 256, 256],
+      "Agent": {
+        "actor_fc_layer_params": [128],
+        "critic_fc_layer_params": [128],
         "learning_rate": 3e-4,
         "num_epochs": 1,
         "agent_name": "ppo_agent",
@@ -15,26 +15,26 @@
         "buffer_prefetch": 1,
         "batch_size": 256,
         "normalize_observations": false,
-        "normalize_rewards": true,
+        "normalize_rewards": false,
         "checkpoint_path": "configurations/highway/checkpoints/"
       },
-      "Agent": {
-        "actor_fc_layer_params": [128],
-        "critic_joint_fc_layer_params": [128],
+      "SACAgent": {
+        "actor_fc_layer_params": [256, 256],
+        "critic_joint_fc_layer_params": [256, 256],
         "actor_learning_rate": 3e-4,
         "critic_learning_rate": 3e-4,
         "alpha_learning_rate": 3e-4,
         "target_update_tau": 0.005,
         "target_update_period": 1,
-        "gamma": 0.99,
-        "reward_scale_factor": 3,
+        "gamma": 0.995,
+        "reward_scale_factor": 1,
         "gradient_clipping": null, 
         "agent_name": "sac_agent",
         "debug_summaries": "True",
         "replay_buffer_capacity": 100000,
         "max_ckpts_to_keep": 3,
         "parallel_buffer_calls": 3,
-        "batch_size": 50,
+        "batch_size": 256,
         "num_parallel_environments": 1,
         "buffer_num_steps": 2,
         "buffer_prefetch": 3,
@@ -48,9 +48,9 @@
       "Observer": {
         "velocity_range": [0, 30],
         "theta_range": [-3.14, 3.14],
-        "normalization_enabled": false,
-        "max_num_agents": 2,
-        "n_nearest_agents": 5,
+        "normalization_enabled": true,
+        "max_num_agents": 3,
+        "n_nearest_agents": 3,
         "max_vel": 30.0,
         "max_lon": 500.0,
         "max_dist": 100.0

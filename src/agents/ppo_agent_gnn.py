@@ -15,7 +15,7 @@ from tf_agents.trajectories import time_step as ts
 from src.agents.tfa_agent import TFAAgent
 from source.gnn_wrapper import GNNWrapper
 from source.tfa_value_net import GNNValueNetwork
-from source.tfa_actor_net import GNNActorNetwork
+from source.tfa_actor_net_new import GNNActorNetwork
 
 
 class PPOAgentGNN(TFAAgent):
@@ -61,11 +61,27 @@ class PPOAgentGNN(TFAAgent):
     actor_net = GNNActorNetwork(
       env.observation_spec(),
       env.action_spec(),
+      node_layers_def=[
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+      ],
+      edge_layers_def=[
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+      ],
       fc_layer_params=tuple(
         self._params["ML"]["Agent"]["actor_fc_layer_params"]))
 
     value_net = GNNValueNetwork(
       env.observation_spec(),
+      node_layers_def=[
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+      ],
+      edge_layers_def=[
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+      ],
       fc_layer_params=tuple(
         self._params["ML"]["Agent"]["critic_fc_layer_params"]))
 
@@ -84,7 +100,7 @@ class PPOAgentGNN(TFAAgent):
       train_step_counter=self._ckpt.step,
       num_epochs=self._params["ML"]["Agent"]["num_epochs"],
       name=self._params["ML"]["Agent"]["agent_name"],
-      debug_summaries=self._params["ML"]["Agent"]["debug_summaries"])
+      debug_summaries=True)
     tf_agent.initialize()
     return tf_agent
 
