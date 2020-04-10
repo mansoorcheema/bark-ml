@@ -14,7 +14,7 @@ from src.observers.observer import StateObserver
 class GraphObserverV2(StateObserver):
   def __init__(self,
                max_num_vehicles=5,
-               num_nearest_vehicles=5,
+               num_nearest_vehicles=4,
                params=ParameterServer(),
                viewer=None):
     StateObserver.__init__(self, params)
@@ -26,19 +26,10 @@ class GraphObserverV2(StateObserver):
     self._e0_len = 2
     self._num_nearest_vehicles = num_nearest_vehicles
     self._max_num_vehicles = max_num_vehicles
-    self._num_graph_rows = 20 #math.pow(num_nearest_vehicles, max_num_vehicles) + 1
+    self._num_graph_rows = 25 #math.pow(num_nearest_vehicles, max_num_vehicles) + 1
     self._observation_len = self._max_num_vehicles*self._len_state
     self._initial_lane_corr = None
     self._viewer = viewer
-
-  def OrderedAgentIds(self, world, agents_to_observe):
-    agent_id_list = []
-    for oid in agents_to_observe:
-      agent_id_list.append(oid)
-    for agent_id, _ in world.agents.items():
-      if agent_id not in agents_to_observe:
-        agent_id_list.append(agent_id)
-    return agent_id_list
 
   def FindNearestAgentIds(self, world, agent_id, num_nearest=5):
     agent_state = world.GetAgent(agent_id).state
@@ -70,12 +61,37 @@ class GraphObserverV2(StateObserver):
     #     goal_center_line,
     #     Point2d(ego_agent_state[1], ego_agent_state[2]),
     #     reduced_state[3])
-    n_vx = self._norm(vx, [-8., 8.])
-    n_vy = self._norm(vy, [0., 20.])
+    n_vx = self._norm(vx, [-2., 2.])
+    n_vy = self._norm(vy, [5., 15.])
     # n_d_goal = self._norm(d_goal, [-8., 8.])
     # print(agent_id, [n_vx, n_vy, n_d_goal])
     # TODO(@hart): HACK; remove
     return np.array([x, y, n_vx, n_vy], dtype=np.float32)
+
+  def CalculateEdgeValue(self, observed_world, from_id, to_id):
+    from_agent = observed_world.agents[from_id]
+    to_agent = observed_world.agents[to_id]
+    reduced_from_state = self._select_state_by_index(from_agent.state)
+    reduced_to_state = self._select_state_by_index(to_agent.state)
+    dx = reduced_to_state[0] - reduced_from_state[0]
+    dy = reduced_to_state[1] - reduced_from_state[1]
+    # plot connections
+    if self._viewer is not None:
+      pt_from = Point2d(reduced_from_state[0], reduced_from_state[1])
+      pt_to = Point2d(reduced_to_state[0], reduced_to_state[1])
+      line = Line2d()
+      line.AddPoint(pt_from)
+      line.AddPoint(pt_to)
+      color = "gray"
+      alpha = 0.25
+      if to_id == observed_world.ego_agent.id:
+        color = "red"
+        alpha = 1.0
+      self._viewer.drawLine2d(line, color=color, alpha=alpha)
+    # print("from_id: ", from_id, ", to_id:", to_id, ", dx: ", dx, ", dy: ", dy)
+    n_dx = self._norm(dx, [-6., 6.])
+    n_dy = self._norm(dy, [-50., 50.])
+    return np.array([n_dx, n_dy], dtype=np.float32)
 
   def observe(self, observed_world):
     """see base class
@@ -85,18 +101,14 @@ class GraphObserverV2(StateObserver):
     gen_graph = -1.*np.ones(
       shape=(int(self._num_graph_rows), 8),
       dtype=np.float32)
-    # 1. make sure ego agent is in front
-    # id_list = self.OrderedAgentIds(observed_world, [observed_world.ego_agent.id])
     id_list = self.FindNearestAgentIds(
       observed_world, observed_world.ego_agent.id, self._max_num_vehicles)
     # we need to append the ego agent first!
     if observed_world.ego_agent.id in id_list:
       id_list.remove(observed_world.ego_agent.id)
-    
     id_list.insert(0, observed_world.ego_agent.id)
-    # assert(nearest_agent_ids[0] == observed_world.ego_agent.id)
     assert(id_list[0] == observed_world.ego_agent.id)
-    # print(id_list)
+
     node_row_idx = edge_row_idx= 0
     # 2. loop through all agent
     for agent_id in id_list:
@@ -113,16 +125,12 @@ class GraphObserverV2(StateObserver):
           nearest_ids_.append(lid)
       for from_id in nearest_ids_:
         # print(edge_row_idx, from_id, agent_id)
-        if from_id != observed_world.ego_agent.id:
-          gen_graph[edge_row_idx, :2] = \
-            np.array([id_list.index(from_id),
-                      id_list.index(agent_id)], dtype=np.float32)
-          # gen_graph[edge_row_idx, self._h0_len+2:] = \
-          #   self.CalculateEdgeValue(observed_world, from_id, agent_id)
-          edge_row_idx += 1
-      # self connection
-      gen_graph[edge_row_idx, :2] = \
-        np.array([0, 0], dtype=np.float32)
+        gen_graph[edge_row_idx, :2] = \
+          np.array([id_list.index(from_id),
+                    id_list.index(agent_id)], dtype=np.float32)
+        gen_graph[edge_row_idx, self._h0_len+2:] = \
+          self.CalculateEdgeValue(observed_world, from_id, agent_id)
+        edge_row_idx += 1
       node_row_idx += 1
     return gen_graph
   
@@ -143,5 +151,3 @@ class GraphObserverV2(StateObserver):
   @property
   def _len_state(self):
     return len(self._state_definition)
-
-

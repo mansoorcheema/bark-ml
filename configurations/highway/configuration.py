@@ -76,20 +76,32 @@ def run_configuration(argv):
     deltas = []
     accs = []
     distances = []
-    agent_state = world.agents[104].state
+    vehicle_ids = list(world.agents.keys())
+    controlled_id = scenario._eval_agent_ids[0] #vehicle_ids[3]
+    moved_id = controlled_id# vehicle_ids[2]
+    # agent_state = world.agents[controlled_id].state
+    # world.agents[moved_id].SetState(agent_state + np.array([0, -3.8, 0, 0, 0]))
+
+    agent_state = world.agents[moved_id].state
     start_distance = agent_state[2]
     viewer.drawWorld(world)
-    for _ in range(0, 3):
-      agent_state = world.agents[104].state
-      agent_state[2] += 5.
+    for _ in range(0, 5):
+      agent_state = world.agents[moved_id].state
+      # cool traj
+      agent_state[2] += 5
+      agent_state[1] -= 0.4
+      # agent_state[3] += 0.04
+
       distances.append(agent_state[2]-start_distance)
-      world.agents[104].SetState(agent_state)
+      world.agents[moved_id].SetState(agent_state)
       world.UpdateAgentRTree()
-      observed_state = observer.observe(world, agents_to_observe=[100])
+      observed_world = world.Observe(
+        [controlled_id])[0]
+      observed_state = observer.observe(observed_world)
       time_step = ts.transition(observed_state, reward=0.0, discount=1.0)
       action = eval_policy.action(time_step)
       for agent_id, agent in world.agents.items():
-        viewer.drawAgent(agent, color="gray")
+        viewer.drawAgent(agent, color="gray", alpha=0.25, facecolor="gray")
       print(action)
       deltas.append(action.action[1])
       accs.append(action.action[0])
