@@ -31,7 +31,7 @@ flags.DEFINE_string('base_dir',
                       os.path.dirname(os.path.dirname(__file__))),
                     'Base directory of bark-ml.')
 flags.DEFINE_enum('type',
-                  'graph',
+                  'normal',
                   ['graph', 'normal'],
                   'Mode the configuration should be executed in.')
 
