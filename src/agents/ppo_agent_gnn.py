@@ -64,8 +64,10 @@ class PPOAgentGNN(TFAAgent):
       node_layers_def=[
         {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
         {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
       edge_layers_def=[
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
         {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
         {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
@@ -77,8 +79,10 @@ class PPOAgentGNN(TFAAgent):
       node_layers_def=[
         {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
         {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
       edge_layers_def=[
+        {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
         {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
         {"units" : 80, "activation": "relu", "dropout_rate": 0.0, "type": "DenseLayer"},
       ],
@@ -100,7 +104,7 @@ class PPOAgentGNN(TFAAgent):
       train_step_counter=self._ckpt.step,
       num_epochs=self._params["ML"]["Agent"]["num_epochs"],
       name=self._params["ML"]["Agent"]["agent_name"],
-      debug_summaries=True)
+      debug_summaries=False)
     tf_agent.initialize()
     return tf_agent
 
