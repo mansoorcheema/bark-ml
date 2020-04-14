@@ -8,23 +8,28 @@ def load_bark():
   _maybe(
     native.local_repository,
     name = "icml2020",
-    path="/home/hart/Dokumente/2020/iv2020",
+    path="/Users/hart/2020//iv2020",
   )
   # _maybe(
   #   native.local_repository,
   #   name = "gnn_lib",
   #   path="/Users/hart/2020/gnn",
   # )
-  _maybe(
-    git_repository,
-    name = "bark_project",
-    branch = "master",
-    remote = "https://github.com/bark-simulator/bark",
-  )
+  # _maybe(
+  #   git_repository,
+  #   name = "bark_project",
+  #   branch = "master",
+  #   remote = "https://github.com/bark-simulator/bark",
+  # )
   _maybe(
     native.local_repository,
     name = "gnn_lib",
-    path="/home/hart/Dokumente/2020/gnn",
+    path="/Users/hart/2020/gnn",
+  )
+  _maybe(
+    native.local_repository,
+    name = "bark_project",
+    path="/Users/hart/2019/bark",
   )
   # _maybe(
   #   git_repository,
