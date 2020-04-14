@@ -15,7 +15,7 @@
         "buffer_prefetch": 1,
         "batch_size": 256,
         "normalize_observations": false,
-        "normalize_rewards": false,
+        "normalize_rewards": true,
         "checkpoint_path": "configurations/highway/checkpoints/"
       },
       "SACAgent": {

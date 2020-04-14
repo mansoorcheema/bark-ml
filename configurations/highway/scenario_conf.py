@@ -70,6 +70,6 @@ class RightLaneCorridorConfig(LaneCorridorConfig):
     road_corr = world.map.GetRoadCorridor(self._road_ids, XodrDrivingDirection.forward)
     lane_corr = road_corr.lane_corridors[0]
     return GoalDefinitionStateLimitsFrenet(lane_corr.center_line,
-                                            (0.4, 0.4),
-                                            (0.1, 0.1),
-                                            (10., 15.))
+                                           (0.4, 0.4),
+                                           (0.1, 0.1),
+                                           (10., 15.))
