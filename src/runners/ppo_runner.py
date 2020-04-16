@@ -52,29 +52,3 @@ class PPORunner(TFARunner):
         self.evaluate()
         self._agent.save()
 
-  def evaluate(self, num=None):
-    """Evaluates the agent
-    """
-    if num is None:
-      num = self._params["ML"]["Runner"]["evaluation_steps"]
-    global_iteration = self._agent._agent._train_step_counter.numpy()
-    logger.info("Evaluating the agent's performance in {} episodes."
-      .format(str(num)))
-    metric_utils.eager_compute(
-      self._eval_metrics,
-      self._eval_runtime,
-      self._agent._agent.policy,
-      num_episodes=num)
-    metric_utils.log_metrics(self._eval_metrics)
-    tf.summary.scalar("mean_reward",
-                      self._eval_metrics[0].result().numpy(),
-                      step=global_iteration)
-    tf.summary.scalar("mean_steps",
-                      self._eval_metrics[1].result().numpy(),
-                      step=global_iteration)
-    logger.error(
-      "The agent achieved on average {} reward and {} steps in \
-      {} episodes." \
-      .format(str(self._eval_metrics[0].result().numpy()),
-              str(self._eval_metrics[1].result().numpy()),
-              str(self._params["ML"]["Runner"]["evaluation_steps"])))
