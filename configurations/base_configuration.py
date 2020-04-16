@@ -36,4 +36,4 @@ class BaseConfiguration:
   def evaluate(self, num=25):
     """Evaluates the agent
     """
-    self._runner.evaluate(num)
+    return self._runner.evaluate(num)

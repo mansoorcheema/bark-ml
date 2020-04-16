@@ -2,6 +2,7 @@ import sys
 import logging
 import time
 import tensorflow as tf
+import numpy as np
 tf.compat.v1.enable_v2_behavior()
 
 from tf_agents.drivers import dynamic_step_driver
@@ -99,30 +100,48 @@ class TFARunner(BaseRunner):
     """
     pass
 
-  def evaluate(self):
+  def evaluate(self, num=None):
     """Evaluates the agent
+       Need to overwrite the class of the base function as the metric class somehow does
+       not work.
     """
     global_iteration = self._agent._agent._train_step_counter.numpy()
+    evaluation_episodes = num or self._params["ML"]["Runner"]["evaluation_steps"]
     logger.info("Evaluating the agent's performance in {} episodes."
-      .format(str(self._params["ML"]["Runner"]["evaluation_steps"])))
-    metric_utils.eager_compute(
-      self._eval_metrics,
-      self._runtime,
-      self._agent._agent.policy,
-      num_episodes=self._params["ML"]["Runner"]["evaluation_steps"])
-    metric_utils.log_metrics(self._eval_metrics)
+      .format(str(evaluation_episodes)))
+    # Ticket (https://github.com/tensorflow/agents/issues/59) recommends
+    # to do the rendering in the original environment
+    rewards = []
+    steps = []
+    run_infos = []
+    if self._unwrapped_runtime is not None:
+      for _ in range(0, evaluation_episodes):
+        state = np.array([self._unwrapped_runtime.reset()], dtype=np.float32)
+        is_terminal = False
+        while not is_terminal:
+          action_step = self._agent._eval_policy.action(
+            ts.transition(np.array([state], dtype=np.float32), reward=0.0, discount=1.0))
+          state, reward, is_terminal, info = self._unwrapped_runtime.step(
+            action_step.action.numpy())
+          if is_terminal:
+            run_infos.append(info)
+          rewards.append(reward)
+          steps.append(1)
+    mean_reward = np.sum(np.array(rewards))/evaluation_episodes
+    mean_steps = np.sum(np.array(steps))/evaluation_episodes
     tf.summary.scalar("mean_reward",
-                      self._eval_metrics[0].result().numpy(),
+                      mean_reward,
                       step=global_iteration)
     tf.summary.scalar("mean_steps",
-                      self._eval_metrics[1].result().numpy(),
+                      mean_steps,
                       step=global_iteration)
     logger.info(
-      "The agent achieved on average {} reward and {} steps in \
+      "The agent achieved average {} reward and {} steps in \
       {} episodes." \
-      .format(str(self._eval_metrics[0].result().numpy()),
-              str(self._eval_metrics[1].result().numpy()),
-              str(self._params["ML"]["Runner"]["evaluation_steps"])))
+      .format(str(mean_reward),
+              str(mean_steps),
+              str(evaluation_episodes)))
+    return run_infos
 
   def visualize(self, num_episodes=1):
     # Ticket (https://github.com/tensorflow/agents/issues/59) recommends
