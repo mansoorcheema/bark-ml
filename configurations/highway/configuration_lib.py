@@ -90,8 +90,8 @@ class HighwayConfiguration(BaseConfiguration):
       self._agent = PPOAgentGNN(tfa_env, params=self._params)
       # self._agent = SACAgentGNN(tfa_env, params=self._params)
     else:
-      # self._agent = PPOAgent(tfa_env, params=self._params)
-      self._agent = SACAgent(tfa_env, params=self._params)
+      self._agent = PPOAgent(tfa_env, params=self._params)
+      # self._agent = SACAgent(tfa_env, params=self._params)
 
     self._runner = PPORunner(tfa_env,
                              eval_tf_env,

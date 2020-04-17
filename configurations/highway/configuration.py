@@ -51,8 +51,19 @@ def run_configuration(argv):
     # configuration._viewer.export_video("/home/hart/Dokumente/2020/bark-ml/configurations/highway/video/lane_change_3")
   elif FLAGS.mode == 'evaluate':
     configuration.evaluate(100)
-    print(configuration._runtime._collision_count/100)
-    print(configuration._runtime._success_count/100)
+    N = 100
+    run_infos = configuration.evaluate(N)
+    goal_reached = 0
+    collision_count = 0
+    for ri in run_infos:
+      print(ri)
+      if ri["goal_reached"]:
+        goal_reached += 1
+      if ri["collision"] or ri["drivable_area"]:
+        collision_count += 1
+    print(goal_reached/N, collision_count/N)
+    # print(configuration._runtime._collision_count/1000)
+    # print(configuration._runtime._success_count/1000)
   elif FLAGS.mode == 'ablation':
     # caution: use 5 vehicles
     eval_policy = configuration._agent._agent.policy
