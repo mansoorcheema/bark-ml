@@ -15,12 +15,12 @@
         "buffer_prefetch": 1,
         "batch_size": 128,
         "normalize_observations": false,
-        "normalize_rewards": true,
+        "normalize_rewards": false,
         "checkpoint_path": "configurations/highway/checkpoints/"
       },
       "SACAgent": {
-        "actor_fc_layer_params": [256, 256],
-        "critic_joint_fc_layer_params": [256, 256],
+        "actor_fc_layer_params": [512, 256, 256],
+        "critic_joint_fc_layer_params": [512, 256, 256],
         "actor_learning_rate": 3e-4,
         "critic_learning_rate": 3e-4,
         "alpha_learning_rate": 3e-4,
@@ -59,7 +59,7 @@
         "number_of_collections": 5000000,
         "initial_collection_steps": 50,
         "collection_episodes_per_cycle": 10,
-        "evaluate_every_n_steps": 500,
+        "evaluate_every_n_steps": 2000,
         "evaluation_steps": 50,
         "summary_path": "configurations/highway/summaries/"
       },
