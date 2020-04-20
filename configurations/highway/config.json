@@ -13,9 +13,9 @@
         "parallel_buffer_calls": 1,
         "buffer_num_steps": 1,
         "buffer_prefetch": 1,
-        "batch_size": 128,
+        "batch_size": 256,
         "normalize_observations": false,
-        "normalize_rewards": false,
+        "normalize_rewards": true,
         "checkpoint_path": "configurations/highway/checkpoints/"
       },
       "SACAgent": {
@@ -58,9 +58,9 @@
       "Runner": {
         "number_of_collections": 5000000,
         "initial_collection_steps": 50,
-        "collection_episodes_per_cycle": 10,
-        "evaluate_every_n_steps": 2000,
-        "evaluation_steps": 50,
+        "collection_episodes_per_cycle": 20,
+        "evaluate_every_n_steps": 500,
+        "evaluation_steps": 25,
         "summary_path": "configurations/highway/summaries/"
       },
       "DynamicModel": {
