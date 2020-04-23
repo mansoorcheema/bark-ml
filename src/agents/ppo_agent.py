@@ -62,7 +62,7 @@ class PPOAgent(TFAAgent):
       env.action_spec(),
       actor_net=actor_net,
       value_net=value_net,
-      # gradient_clipping=0.1,
+      gradient_clipping=0.05,
       # policy_l2_reg=self._params["ML"]["Agent"]["policy_l2_reg", "", 0.],
       # log_prob_clipping=self._params["ML"]["Agent"]["log_prob_clipping", "", 0.],
       # entropy_regularization=self._params["ML"]["Agent"]["entropy_regularization", "", 0.01],

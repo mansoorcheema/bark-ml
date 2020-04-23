@@ -84,8 +84,11 @@ class HighwayConfiguration(BaseConfiguration):
                               viewer=self._viewer,
                               scenario_generator=self._scenario_generator)
     eval_tf_env = tf_py_environment.TFPyEnvironment(TFAWrapper(self._runtime))
-    tfa_env = tf_py_environment.TFPyEnvironment(TFAWrapper(self._runtime))
-
+    # tfa_env = tf_py_environment.TFPyEnvironment(TFAWrapper(self._runtime))
+    tfa_env = tf_py_environment.TFPyEnvironment(
+      parallel_py_environment.ParallelPyEnvironment(
+        [lambda: TFAWrapper(self._runtime)] * self._params["ML"]["Agent"]["num_parallel_environments", "", 0]))
+    
     if self._params["type"] == "graph":
       self._agent = PPOAgentGNN(tfa_env, params=self._params)
       # self._agent = SACAgentGNN(tfa_env, params=self._params)
