@@ -95,11 +95,10 @@ class PPOAgentGNN(TFAAgent):
       env.action_spec(),
       actor_net=actor_net,
       value_net=value_net,
-      gradient_clipping=0.1,
-      entropy_regularization=self._params["ML"]["Agent"]["entropy_regularization", "", 0.01],
+      entropy_regularization=self._params["ML"]["Agent"]["entropy_regularization", "", 0.001],
       importance_ratio_clipping=self._params["ML"]["Agent"]["importance_ratio_clipping", "", 0.2],
       use_gae=self._params["ML"]["Agent"]["use_gae", "", True],
-      lambda_value=0.95,
+      lambda_value=0.99,
       use_td_lambda_return=self._params["ML"]["Agent"]["use_td_lambda_return", "", True],
       normalize_observations=self._params["ML"]["Agent"][
         "normalize_observations", "", False],
