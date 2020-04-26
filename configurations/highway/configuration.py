@@ -50,7 +50,6 @@ def run_configuration(argv):
     configuration.visualize(10)
     # configuration._viewer.export_video("/home/hart/Dokumente/2020/bark-ml/configurations/highway/video/lane_change_3")
   elif FLAGS.mode == 'evaluate':
-    configuration.evaluate(100)
     N = 100
     run_infos = configuration.evaluate(N)
     goal_reached = 0

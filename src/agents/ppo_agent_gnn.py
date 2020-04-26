@@ -95,11 +95,12 @@ class PPOAgentGNN(TFAAgent):
       env.action_spec(),
       actor_net=actor_net,
       value_net=value_net,
-      entropy_regularization=self._params["ML"]["Agent"]["entropy_regularization", "", 0.001],
-      importance_ratio_clipping=self._params["ML"]["Agent"]["importance_ratio_clipping", "", 0.2],
-      use_gae=self._params["ML"]["Agent"]["use_gae", "", True],
-      lambda_value=0.99,
-      use_td_lambda_return=self._params["ML"]["Agent"]["use_td_lambda_return", "", True],
+      # entropy_regularization=self._params["ML"]["Agent"]["entropy_regularization", "", 0.001],
+      # importance_ratio_clipping=self._params["ML"]["Agent"]["importance_ratio_clipping", "", 0.2],
+      # use_gae=self._params["ML"]["Agent"]["use_gae", "", True],
+      # initial_adaptive_kl_beta=0.,
+      # lambda_value=0.99,
+      # use_td_lambda_return=self._params["ML"]["Agent"]["use_td_lambda_return", "", True],
       normalize_observations=self._params["ML"]["Agent"][
         "normalize_observations", "", False],
       normalize_rewards=self._params["ML"]["Agent"][
@@ -109,7 +110,7 @@ class PPOAgentGNN(TFAAgent):
       train_step_counter=self._ckpt.step,
       num_epochs=self._params["ML"]["Agent"]["num_epochs"],
       name=self._params["ML"]["Agent"]["agent_name"],
-      debug_summaries=False)
+      debug_summaries=self._params["ML"]["Agent"]["debug_summaries"])
     tf_agent.initialize()
     return tf_agent
 
