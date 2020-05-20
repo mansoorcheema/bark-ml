@@ -11,7 +11,7 @@ py_library(
     srcs = ["custom_evaluator.py"],
     data = ["@bark_project//bark:generate_core"],
     imports = ["../external/bark_project/python/"],
-    deps = ["@bark_project//modules/runtime:runtime",
+    deps = ["@bark_project//bark/runtime:runtime",
             "//src/evaluators:evaluators"],
     visibility = ["//visibility:public"],
 )
@@ -21,7 +21,7 @@ py_library(
     srcs = ["custom_observer.py"],
     data = ["@bark_project//bark:generate_core"],
     imports = ["../external/bark_project/python/"],
-    deps = ["@bark_project//modules/runtime:runtime",
+    deps = ["@bark_project//bark/runtime:runtime",
             "//src/observers:observers"],
     visibility = ["//visibility:public"],
 )
@@ -33,15 +33,15 @@ py_library(
           "//tests/data:bark_data",
           ":configuration_data"],
   imports = ["../external/bark_project/python/"],
-  deps = ["@bark_project//modules/runtime:runtime",
-          "@bark_project//modules/runtime/scenario/scenario_generation:scenario_generation",
+  deps = ["@bark_project//bark/runtime:runtime",
+          "@bark_project//bark/runtime/scenario/scenario_generation:scenario_generation",
           "//src:rl_runtime",
           "//src/agents:agents",
           "//src/runners:runners",
           "//configurations:base_configuration",
           ":custom_evaluator",
           ":custom_observer",
-          "@bark_project//modules/runtime/viewer:video_renderer"],
+          "@bark_project//bark/runtime/viewer:video_renderer"],
   visibility = ["//visibility:public"],
 )
 

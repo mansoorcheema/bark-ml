@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 from bark.models.behavior import BehaviorMotionPrimitives, \
   DynamicBehaviorModel
 from bark.models.dynamic import SingleTrackModel
-from modules.runtime.commons.parameters import ParameterServer
+from bark.runtime.commons.parameters import ParameterServer
 
 
 class ActionWrapper(ABC):

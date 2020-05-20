@@ -6,7 +6,7 @@ import operator
 
 from bark.models.dynamic import StateDefinition
 from bark.world import ObservedWorld
-from modules.runtime.commons.parameters import ParameterServer
+from bark.runtime.commons.parameters import ParameterServer
 from src.observers.observer import StateObserver
 
 

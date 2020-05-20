@@ -8,16 +8,16 @@ import unittest
 import os
 import time
 import numpy as np
-from modules.runtime.scenario.scenario_generation.deterministic \
+from bark.runtime.scenario.scenario_generation.deterministic \
   import DeterministicScenarioGeneration
-from modules.runtime.scenario.scenario_generation.scenario_generation \
+from bark.runtime.scenario.scenario_generation.scenario_generation \
   import ScenarioGeneration
 from bark.world.goal_definition import GoalDefinition, GoalDefinitionPolygon
 from bark.geometry import *
-from modules.runtime.commons.parameters import ParameterServer
-from modules.runtime.runtime import Runtime
-from modules.runtime.viewer.matplotlib_viewer import MPViewer
-from modules.runtime.viewer.pygame_viewer import PygameViewer
+from bark.runtime.commons.parameters import ParameterServer
+from bark.runtime.runtime import Runtime
+from bark.runtime.viewer.matplotlib_viewer import MPViewer
+from bark.runtime.viewer.pygame_viewer import PygameViewer
 
 
 class PyRuntimeTests(unittest.TestCase):
