@@ -1,7 +1,7 @@
 py_test(
     name = "py_bark_agent_tests",
     srcs = ["py_bark_agent_tests.py"],
-    data = ["@bark_project//python:bark.so",
+    data = ["@bark_project//bark:generate_core",
             "//tests/data:bark_data",
             "//configurations/highway:configuration_data"],
     imports = ["../external/bark_project/python/"],
@@ -18,7 +18,7 @@ py_test(
 py_test(
     name = "py_runtime_rl_tests",
     srcs = ["py_runtime_rl_tests.py"],
-    data = ["@bark_project//python:bark.so",
+    data = ["@bark_project//bark:generate_core",
             "//tests/data:bark_data"],
     imports = ["../external/bark_project/python/"],
     deps = ["@bark_project//modules/runtime:runtime",
@@ -31,7 +31,7 @@ py_test(
 py_test(
     name = "py_runtime_tfa_tests",
     srcs = ["py_runtime_tfa_tests.py"],
-    data = ["@bark_project//python:bark.so",
+    data = ["@bark_project//bark:generate_core",
             "//tests/data:bark_data"],
     imports = ["../external/bark_project/python/"],
     deps = ["@bark_project//modules/runtime:runtime",
@@ -44,7 +44,7 @@ py_test(
 py_test(
     name = "py_agent_tests",
     srcs = ["py_agent_tests.py"],
-    data = ["@bark_project//python:bark.so",
+    data = ["@bark_project//bark:generate_core",
             "//tests/data:bark_data"],
     imports = ["../external/bark_project/python/"],
     deps = ["@bark_project//modules/runtime:runtime",
@@ -57,7 +57,7 @@ py_test(
 py_test(
     name = "py_runner_tests",
     srcs = ["py_runner_tests.py"],
-    data = ["@bark_project//python:bark.so",
+    data = ["@bark_project//bark:generate_core",
             "//tests/data:bark_data"],
     imports = ["../external/bark_project/python/"],
     deps = ["@bark_project//modules/runtime:runtime",
@@ -71,7 +71,7 @@ py_test(
 py_test(
   name = "py_runtime_tests",
   srcs = ["py_runtime_tests.py"],
-  data = ["@bark_project//python:bark.so",
+  data = ["@bark_project//bark:generate_core",
           "//tests/data:bark_data"],
   imports = ["../external/bark_project/python/"],
   deps = ["@bark_project//modules/runtime:runtime",

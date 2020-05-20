@@ -1,7 +1,7 @@
 py_library(
     name = "rl_runtime",
     srcs = ["rl_runtime.py"],
-    data = ["@bark_project//python:bark.so"],
+    data = ["@bark_project//bark:generate_core"],
     imports = ["../external/bark_project/python/"],
     deps = ["@bark_project//modules/runtime:runtime",
             "//src/wrappers:wrappers",
@@ -13,7 +13,7 @@ py_library(
 py_library(
     name = "test_env",
     srcs = ["test_env.py"],
-    data = ["@bark_project//python:bark.so"],
+    data = ["@bark_project//bark:generate_core"],
     imports = ["../external/bark_project/python/"],
     deps = ["@bark_project//modules/runtime:runtime",
             "//src/wrappers:wrappers",

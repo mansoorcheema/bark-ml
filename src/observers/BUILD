@@ -3,7 +3,7 @@ py_library(
     srcs = ["nearest_state_observer.py",
             "simple_observer.py",
             "observer.py"],
-    data = ["@bark_project//python:bark.so"],
+    data = ["@bark_project//bark:generate_core"],
     imports = ["../external/bark_project/python/"],
     deps = ["@bark_project//modules/runtime:runtime"],
     visibility = ["//visibility:public"],

@@ -9,7 +9,7 @@ filegroup(
 py_library(
     name = "custom_evaluator",
     srcs = ["custom_evaluator.py"],
-    data = ["@bark_project//python:bark.so"],
+    data = ["@bark_project//bark:generate_core"],
     imports = ["../../python/",
                "../external/bark_project/python/"],
     deps = ["@bark_project//modules/runtime:runtime",
@@ -20,7 +20,7 @@ py_library(
 py_library(
   name = "configuration_lib",
   srcs = ["configuration_lib.py"],
-  data = ["@bark_project//python:bark.so",
+  data = ["@bark_project//bark:generate_core",
           "//python:bark_ml.so",
           "//tests/data:bark_data",
           ":configuration_data"],
@@ -40,7 +40,7 @@ py_library(
 py_binary(
   name = "configuration",
   srcs = ["configuration.py"],
-  data = ["@bark_project//python:bark.so",
+  data = ["@bark_project//bark:generate_core",
           "//tests/data:bark_data",
           ":configuration_data"],
   imports = ["../../python/",

@@ -9,7 +9,7 @@ filegroup(
 py_library(
     name = "custom_evaluator",
     srcs = ["custom_evaluator.py"],
-    data = ["@bark_project//python:bark.so"],
+    data = ["@bark_project//bark:generate_core"],
     imports = ["../external/bark_project/python/"],
     deps = ["@bark_project//modules/runtime:runtime",
             "//src/evaluators:evaluators"],
@@ -19,7 +19,7 @@ py_library(
 py_library(
     name = "custom_observer",
     srcs = ["custom_observer.py"],
-    data = ["@bark_project//python:bark.so"],
+    data = ["@bark_project//bark:generate_core"],
     imports = ["../external/bark_project/python/"],
     deps = ["@bark_project//modules/runtime:runtime",
             "//src/observers:observers"],
@@ -29,7 +29,7 @@ py_library(
 py_library(
   name = "configuration_lib",
   srcs = ["configuration.py"],
-  data = ["@bark_project//python:bark.so",
+  data = ["@bark_project//bark:generate_core",
           "//tests/data:bark_data",
           ":configuration_data"],
   imports = ["../external/bark_project/python/"],
@@ -48,7 +48,7 @@ py_library(
 py_binary(
   name = "configuration",
   srcs = ["configuration.py"],
-  data = ["@bark_project//python:bark.so",
+  data = ["@bark_project//bark:generate_core",
           "//tests/data:bark_data",
           ":configuration_data"],
   imports = ["../external/bark_project/python/"],
