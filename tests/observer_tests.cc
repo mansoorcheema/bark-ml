@@ -5,11 +5,11 @@
 
 
 #include "gtest/gtest.h"
-#include "modules/commons/params/params.hpp"
-#include "modules/geometry/geometry.hpp"
-#include "modules/commons/params/default_params.hpp"
+#include "bark/commons/params/params.hpp"
+#include "bark/geometry/geometry.hpp"
+#include "bark/commons/params/default_params.hpp"
 #include "src/observers/nearest_observer.hpp"
-#include "modules/world/tests/make_test_world.hpp"
+#include "bark/world/tests/make_test_world.hpp"
 
 TEST(observes, nearest_observer) {
   // ugly imports
